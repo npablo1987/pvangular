@@ -1,0 +1,26 @@
+/* capa negra semitransparente + blur */
+.overlay {
+  position: fixed;
+  inset: 0;                     /* top/left/right/bottom = 0 */
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* spinner circular bicolor */
+.spinner {
+  width: 80px;
+  height: 80px;
+  border: 8px solid transparent;        /* base transparente */
+  border-top-color: #1565c0;            /* azul */
+  border-right-color: #d32f2f;          /* rojo */
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
