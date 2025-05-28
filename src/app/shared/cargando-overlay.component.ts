@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { LoadingService } from '../../services/serviceui/loading.service';
+import { LoadingService } from '../services/serviceui/loading.service';
 import { CommonModule } from '@angular/common';
 import { AsyncPipe } from '@angular/common';
 

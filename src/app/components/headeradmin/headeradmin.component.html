@@ -1,0 +1,94 @@
+<!--
+///////////////////////////////
+///////////////////////////////
+//////
+////// CABECERA
+//////
+///////////////////////////////
+///////////////////////////////
+-->
+<header class="main_header">
+
+  <nav class="navbar navbar-light navbar-expand-lg navbar-lg">
+    <div class="container">
+      <a class="navbar-nav" href=".">
+        <img src="images/logo-header.png"/>
+      </a>
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarLgLightExampleCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="navbar-collapse collapse" id="navbarLgLightExampleCollapse">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Fichas Receptores</a></li>
+          <li class="nav-item">
+            <a class="nav-link" >Fichas Asignadas</a></li>
+          <li class="nav-item">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item text-danger">Cerrar sesión</button>
+              </div>
+            </div>
+          </li>
+          &nbsp;
+          <li class="nav-item">
+            <div class="dropdown">
+              <button class="btn btn-block btn-primary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 19.75C9.1 19.75 10 18.85 10 17.75H6C6 18.85 6.9 19.75 8 19.75ZM14 13.75V8.75C14 5.68 12.37 3.11 9.5 2.43V1.75C9.5 0.92 8.83 0.25 8 0.25C7.17 0.25 6.5 0.92 6.5 1.75V2.43C3.64 3.11 2 5.67 2 8.75V13.75L0 15.75V16.75H16V15.75L14 13.75ZM12 14.75H4V8.75C4 6.27 5.51 4.25 8 4.25C10.49 4.25 12 6.27 12 8.75V14.75Z" fill="white"/></svg>&nbsp;
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownNotif">
+                <a class="dropdown-item" href="#">Ficha aprobada</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Ficha rechazada</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Su ficha requiere actualización</a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav><!-- /.navbar -->
+
+  <div class="breadcrumbs-toolbar container">
+
+    <div class="breadcrumbs">
+      <a href="" class="breadcrumb_link">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z" fill="black" fill-opacity="0.54"/></svg>
+      </a>
+      <div class="breadcrumb_sep">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.29504 16.59L12.875 12L8.29504 7.41L9.70504 6L15.705 12L9.70504 18L8.29504 16.59Z" fill="#4D4D4D"/></svg>
+      </div>
+      <a href="" class="breadcrumb_link actual">Fichas Receptores</a>
+    </div>
+
+    <div class="toolbar">
+
+      <div class="toolbar-btn-group">
+        <button type="button"
+                class="toolbar-btn toolbar-behavior-contrast"
+                (click)="toggleContraste($event)">
+          <i class="cl cl-contrast"></i>
+        </button>
+
+        <button type="button"
+                class="toolbar-btn toolbar-behavior-decrease"
+                (click)="cambiarTamanoFuente(-1, $event)">
+          <i class="cl cl-decrease-text"></i>
+        </button>
+
+        <button type="button"
+                class="toolbar-btn toolbar-behavior-increase"
+                (click)="cambiarTamanoFuente(1, $event)">
+          <i class="cl cl-increase-text"></i>
+        </button>
+      </div>
+
+      <a class="toolbar-btn toolbar-toggler" href="#"><i class="cl cl-accessibility toolbar-behavior-on"></i><span class="toolbar-behavior-off">X</span></a>
+    </div>
+
+  </div><!-- / .breadcrumbs-toolbar -->
+
+</header><!-- /.main_header -->

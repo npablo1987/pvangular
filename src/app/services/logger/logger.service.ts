@@ -15,6 +15,12 @@ export class LoggerService {
     }
   }
 
+  info(message: any, ...optionalParams: any[]) {
+    if (!environment.production) {
+      console.info('[INFO]', message, ...optionalParams);
+    }
+  }
+
   warn(message: any, ...optionalParams: any[]) {
     if (!environment.production) {
       console.warn('[WARN]', message, ...optionalParams);
@@ -30,5 +36,5 @@ export class LoggerService {
     }
   }
 
-  
+
 }
