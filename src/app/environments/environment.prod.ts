@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  baseurl: "http://localhost:8000",
+  baseurl: "https://rfp-backend.qa.k24.indap.cl",
   claveUnica: {
     clientId:  'cd40ad229df147389504190c71de61f5',
     clientSecret: '78ce7c028c9b4b629b7bc2b1b86fa199',
