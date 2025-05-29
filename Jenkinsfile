@@ -99,7 +99,7 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
-                    app = docker.build("registro-fondos-publicos/frontend/admin", "-f RFPAdmin/Dockerfile ./RFPAdmin/")
+                    app = docker.build("registro-fondos-publicos/frontend/admin", "-f ./Dockerfile .")
                 }
             }
         }
