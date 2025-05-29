@@ -1,2 +1,9 @@
+
+
 <app-cargando-overlay></app-cargando-overlay>
+
+
 <router-outlet></router-outlet>
+<div *ngIf="errorMessage" class="alert alert-danger">
+  <strong>DEBUG:</strong> {{ errorMessage }}
+</div>

@@ -1,6 +1,5 @@
 export const environment = {
   production: true,
-  baseurlocal: "http://localhost:4300/",
   baseurl: "http://localhost:8000",
   claveUnica: {
     clientId:  'cd40ad229df147389504190c71de61f5',
