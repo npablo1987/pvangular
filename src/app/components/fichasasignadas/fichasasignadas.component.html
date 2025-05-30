@@ -1,0 +1,56 @@
+<div class="container">
+  <h1 class="titulo">Fichas Asignadas</h1>
+
+  <div class="d-flex justify-content-end mb-3">
+    <input type="text" class="form-control w-25" placeholder="🔍 Buscar..." [(ngModel)]="filtro">
+  </div>
+
+  <table class="table table-hover table-striped">
+    <thead>
+    <tr>
+      <th (click)="ordenarPor('rut')">RUT ⬍</th>
+      <th (click)="ordenarPor('nombre_razon_social')">Razón Social ⬍</th>
+      <th (click)="ordenarPor('id_region_tramitacion')">Región ⬍</th>
+      <th (click)="ordenarPor('tipo_empresa')">Tipo de Empresa ⬍</th>
+      <th (click)="ordenarPor('otorgado_por')">Representante Legal ⬍</th>
+      <th (click)="ordenarPor('correo')">Contacto ⬍</th>
+      <th (click)="ordenarPor('fecha_otorgamiento')">Fecha Certif. ⬍</th>
+      <th>Revisar</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let p of personasFiltradas | slice:(pagina-1)*itemsPorPagina:(pagina)*itemsPorPagina">
+      <td><button class="btn btn-link p-0" (click)="seleccionarPersona(p)">{{ p.rut }}</button></td>
+      <td>{{ p.nombre_razon_social }}</td>
+      <td>{{ p.id_region_tramitacion }}</td>
+      <td>{{ p.tipo_empresa }}</td>
+      <td>{{ p.otorgado_por }}</td>
+      <td>{{ p.correo }}</td>
+      <td>{{ p.fecha_otorgamiento }}</td>
+      <!--  <td><a routerLink="/datospersonajuridica" class="btn btn-primary">Ir a Datos Persona Jurídica</a></td> -->
+      <!--    <td><a (click)="seleccionarPersona(p)">🔄 Revisar</a></td>-->
+      <td><a (click)="seleccionarPersona(p)">Revisar</a></td>
+
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Paginación -->
+  <div class="d-flex justify-content-between align-items-center">
+    <span>Mostrando del {{ (pagina-1)*itemsPorPagina + 1 }} al {{ pagina*itemsPorPagina > personasFiltradas.length ? personasFiltradas.length : pagina*itemsPorPagina }} de {{ personasFiltradas.length }}.</span>
+
+    <nav>
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="pagina === 1">
+          <a class="page-link" (click)="cambiarPagina(pagina - 1)">⬅</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link">{{ pagina }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="pagina*itemsPorPagina >= personasFiltradas.length">
+          <a class="page-link" (click)="cambiarPagina(pagina + 1)">➡</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+/* ─── contenedor que limita el iframe ─── */
+.pdf-wrapper {
+  /* resta ~240 px (header + breadcrumbs + márgenes) */
+  height: calc(100vh - 240px);
+}
+
+/* el iframe ocupa todo el wrapper sin bordes */
+.pdf-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+

@@ -1,0 +1,36 @@
+.container {
+  max-width: 900px; /* Ajusta el ancho del menú */
+  margin: 0 auto;
+}
+
+.menu {
+  display: flex;
+  justify-content: center; /* Centra los elementos */
+  gap: 30px;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.menu span {
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px 15px;
+  transition: color 0.3s ease-in-out;
+  font-weight: 500;
+}
+
+.menu span.active {
+  color: #007bff; /* Azul */
+  font-weight: bold;
+}
+
+.underline {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 25%;
+  height: 3px;
+  background-color: #007bff;
+  transition: left 0.3s ease-in-out;
+}
+

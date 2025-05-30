@@ -1,0 +1,178 @@
+<app-menuadmin></app-menuadmin>
+<br><br>
+<div class="container mt-3">
+  <h3>Revisión Jurídica</h3>
+  <p><strong>Ley 19862</strong></p>
+  <p>
+    La persona jurídica debe estar inscrita en el registro nacional de receptores de fondos públicos del Ministerio de Hacienda.
+    Para encontrar el perfil de la persona jurídica, se puede buscar en
+    <a href="https://www.registros19862.cl/certificado/institucion" target="_blank">https://www.registros19862.cl/certificado/institucion</a>
+  </p>
+
+  <!-- Preguntas -->
+  <div class="mb-3">
+    <p><strong>¿Está inscrito en Registro Ley 19862?</strong></p>
+    <input type="radio" name="registro19862" id="registro-si"> <label for="registro-si">Sí</label>
+    <input type="radio" name="registro19862" id="registro-no"> <label for="registro-no">No</label>
+  </div>
+
+  <div class="mb-3">
+    <p><strong>¿Los datos del registro son correctos y actualizados?</strong></p>
+    <input type="radio" name="datosCorrectos" id="datos-si"> <label for="datos-si">Sí</label>
+    <input type="radio" name="datosCorrectos" id="datos-no"> <label for="datos-no">No</label>
+  </div>
+
+  <!-- Subida de Certificado -->
+
+
+  <!-- Aviso importante -->
+  <div class="alert alert-warning" role="alert">
+    La persona jurídica debe estar inscrita en el
+    <strong>Registro Nacional de Receptores de Fondos Públicos</strong> del Ministerio de Hacienda.
+    Puede buscar el perfil en&nbsp;
+    <a href="https://www.registros19862.cl/certificado/institucion"
+       target="_blank" rel="noopener">
+      https://www.registros19862.cl/certificado/institucion
+    </a>.
+  </div>
+
+  <!-- Subida de Certificado Registro 1986 -->
+  <div class="mb-4">
+    <label for="certificado" class="form-label fw-bold">Certificado Registro 19862</label>
+    <input type="file"
+           class="form-control"
+           id="certificado"
+           (change)="onFileChange($event)">
+    <button class="btn btn-dark mt-2"
+            [disabled]="subiendo || !selectedFile"
+            (click)="subirCertificado()">
+      {{ subiendo ? 'Subiendo…' : 'Subir' }}
+    </button>
+    <div class="mt-2" *ngIf="mensaje">{{ mensaje }}</div>
+  </div>
+
+  <!-- Tabla de Datos y Documentos -->
+  <h5>Datos y documentos</h5>
+  <p>Los documentos y datos asociados a la ficha deben ser correctos y estar vigentes.</p>
+
+  <table class="table table-striped table-bordered text-center">
+    <thead class="table-light">
+    <tr>
+      <th>Documento</th>
+      <th>Categoría</th>
+      <th>Observación</th>
+      <th>Fecha vigencia</th>
+      <th>Acción</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let doc of documentos">
+      <!-- nombre documento: podrías enlazar descarga si lo deseas -->
+      <td>
+        <a [routerLink]="[]" class="text-primary">{{ doc.nombre }}</a>
+      </td>
+      <td>{{ doc.categoria || '-' }}</td>
+
+      <!-- observación editable -->
+      <td>
+        <input class="form-control"
+               [(ngModel)]="doc.observacion"
+               [readonly]="!doc.edit">
+      </td>
+
+      <!-- fecha vigencia -->
+      <td>
+        <input type="date"
+               class="form-control"
+               [(ngModel)]="doc.fecha_vigencia"
+               [readonly]="!doc.edit">
+      </td>
+
+      <!-- botón editar / guardar -->
+      <td>
+        <button *ngIf="!doc.edit"
+                class="btn btn-sm btn-outline-secondary"
+                (click)="doc.edit = true">
+          Editar
+        </button>
+
+        <button *ngIf="doc.edit"
+                class="btn btn-sm btn-success"
+                [disabled]="!datosValidos(doc)"
+                (click)="guardar(doc)">
+          Guardar
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Observaciones -->
+  <div class="mb-3">
+    <label for="observaciones" class="form-label"><strong>Observaciones:</strong></label>
+    <textarea
+      class="form-control"
+      id="observaciones"
+      name="observaciones"
+      rows="3"
+      [(ngModel)]="observacionDecision"
+      placeholder="Documento está fuera de vigencia">
+      </textarea>
+  </div>
+
+  <h4 class="mt-4">Historial de la ficha</h4>
+
+  <div *ngIf="historial.length === 0" class="alert alert-info">
+    No existen eventos registrados para esta ficha.
+  </div>
+
+  <table *ngIf="historial.length > 0"
+         class="table table-bordered table-striped mt-3">
+    <thead class="table-light">
+    <tr>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Estado</th>
+      <th>Usuario</th>
+      <th>Observaciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let h of historial">
+      <td>{{ h.fecha | date:'dd/MM/yyyy' }}</td>
+      <td>{{ h.hora  | date:'HH:mm:ss' }}</td>
+      <td>{{ h.estado }}</td>
+      <td>{{ h.usuario_nombre || h.id_usuario }}</td>
+      <td>{{ h.observaciones || '-' }}</td>
+    </tr>
+    </tbody>
+  </table>
+
+
+  <div class="d-flex justify-content-between w-100"
+       *ngIf="mostrarAcciones">
+    <button class="btn btn-success"
+            style="background-color:#28a745;border-color:#28a745;"
+            (click)="aprobarRevision()">
+      <i class="fa fa-save"></i> Aprobar Revisión
+    </button>
+
+    <button class="btn btn-danger"
+            (click)="rechazarRevision()">
+      <i class="fa fa-save"></i> Rechazar Revisión
+    </button>
+  </div>
+
+
+  <button
+    class="btn btn-outline-primary me-2"
+    (click)="descargarCertificado()"
+  >
+    <i class="fa fa-file-pdf-o"></i>
+    Descargar certificado
+  </button>
+
+  <!-- Revisión Financiera -->
+  <h3 class="mt-4">Revisión Financiera</h3>
+  <p>Pendiente.</p>
+</div>
