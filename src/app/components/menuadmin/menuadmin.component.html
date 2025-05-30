@@ -1,0 +1,15 @@
+<div class="container text-center">
+  <nav class="menu d-flex justify-content-center">
+    <a [routerLink]="'/datos-empresa'" class="nav-link" routerLinkActive="active">Datos Empresa</a>
+    <a [routerLink]="'/ubicacion-contacto'" class="nav-link" routerLinkActive="active">Ubicación/Contacto</a>
+    <a [routerLink]="'/directorio'" class="nav-link" routerLinkActive="active">Directorio</a>
+    <a [routerLink]="'/revisionficha'" class="nav-link" routerLinkActive="active">Revisión</a>
+    <a [routerLink]="'/certificado'" class="nav-link" routerLinkActive="active">Certificado</a>
+  </nav>
+  <div class="underline"
+       [style.left]="activeTab === 'Datos Empresa' ? '0%' :
+                       activeTab === 'Ubicación/Contacto' ? '25%' :
+                       activeTab === 'Directorio' ? '50%' : '75%'">
+  </div>
+</div>
+

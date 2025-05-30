@@ -1,0 +1,66 @@
+<!-- Barra superior -->
+<app-menuadmin></app-menuadmin>
+<br />
+
+<!-- CONTENIDO PRINCIPAL ENMARCADO EN .container -->
+<div class="container mt-3">
+
+  <h3>Certificado RFP</h3>
+  <hr />
+
+  <!-- ╔═══════════  PRE-VISUALIZACIÓN  ═══════════╗ -->
+  <ng-container *ngIf="pdfUrl; else subidaForm">
+
+    <!-- el ratio mantiene contenido responsivo;
+         la altura real la controlamos vía CSS -->
+    <div class="pdf-wrapper ratio ratio-16x9">
+      <iframe [src]="pdfUrl" title="Certificado RFP"></iframe>
+    </div>
+
+    <a class="btn btn-outline-primary mt-3"
+       [href]="pdfBlobUrl || pdfUrl"
+       download>
+      Descargar PDF
+    </a>
+
+  </ng-container>
+
+  <!-- ╔═══════════  FORMULARIO DE SUBIDA  ═════════╗ -->
+  <ng-template #subidaForm>
+    <form [formGroup]="form" (ngSubmit)="subir()">
+
+      <div class="row g-3">
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold">N.º resolución</label>
+          <input class="form-control"
+                 formControlName="nroResolucion">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Fecha resolución</label>
+          <input type="date"
+                 class="form-control"
+                 formControlName="fechaResolucion">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Archivo PDF</label>
+          <input type="file"
+                 class="form-control"
+                 (change)="onFileChange($event)">
+        </div>
+
+      </div><!-- /.row -->
+
+      <button class="btn btn-success mt-4"
+              type="submit"
+              [disabled]="estadoSubida==='subiendo' || form.invalid">
+        {{ estadoSubida==='subiendo' ? 'Subiendo…' : 'Subir certificado' }}
+      </button>
+
+      <span class="ms-3">{{ mensaje }}</span>
+    </form>
+  </ng-template>
+
+</div><!-- /.container -->

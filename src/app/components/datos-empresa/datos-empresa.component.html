@@ -1,0 +1,86 @@
+<app-menuadmin></app-menuadmin>
+
+<br><br>
+
+<form [formGroup]="empresaForm" class="container mt-3">
+  <div class="row">
+    <!-- Rut Empresa -->
+    <div class="col-md-4">
+      <label for="rut" class="form-label">Rut Empresa</label>
+      <input type="text" class="form-control" id="rut" formControlName="rut"  readonly />
+    </div>
+
+    <!-- Razón Social -->
+    <div class="col-md-4">
+      <label for="razonSocial" class="form-label">Razón Social</label>
+      <input type="text" class="form-control" id="razonSocial" formControlName="razonSocial"   readonly/>
+    </div>
+
+    <!-- Tipo de Empresa -->
+    <div class="col-md-4">
+      <label for="tipoEmpresa" class="form-label">Tipo de Empresa</label>
+      <input type="text" class="form-control" id="tipoEmpresa" formControlName="tipoEmpresa"   readonly/>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <!-- Personalidad Jurídica N° -->
+    <div class="col-md-6">
+      <label for="personalidadJuridica" class="form-label">Personalidad Jurídica N°</label>
+      <input type="text" class="form-control" id="personalidadJuridica" formControlName="personalidadJuridica" readonly/>
+    </div>
+
+    <!-- Personalidad Jurídica otorgada por -->
+    <div class="col-md-6">
+      <label for="otorgadoPor" class="form-label">Personalidad Jurídica otorgada por</label>
+      <input type="text" class="form-control" id="otorgadoPor" formControlName="otorgadoPor" readonly/>
+    </div>
+  </div>
+
+  <!-- Área Temática -->
+  <div class="row mt-3">
+    <div class="col-12">
+      <label for="areaTematica" class="form-label">Área Temática</label>
+      <textarea class="form-control" id="areaTematica" formControlName="areaTematica" rows="2"  readonly></textarea>
+    </div>
+  </div>
+
+
+  <div class="row mt-3">
+    <!-- Patrimonio -->
+    <div class="col-md-4">
+      <label for="patrimonio" class="form-label">Patrimonio</label>
+      <input type="text" class="form-control" id="patrimonio" formControlName="patrimonio"  readonly />
+    </div>
+
+    <!-- Capital social -->
+    <div class="col-md-4">
+      <label for="capitalSocial" class="form-label">Capital social</label>
+      <input type="text" class="form-control" id="capitalSocial" formControlName="capitalSocial" readonly/>
+    </div>
+
+    <!-- Estado Resultado -->
+    <div class="col-md-4">
+      <label for="estadoResultado" class="form-label">Estado Resultado</label>
+      <input type="text" class="form-control" id="estadoResultado" formControlName="estadoResultado"  readonly/>
+    </div>
+  </div>
+</form>
+
+<!-- Sección de documentos -->
+<div class="container mt-4">
+  <h4><strong>Documentos:</strong></h4>
+  <ul class="list-unstyled">
+    <!-- Recorremos 'documentos' con *ngFor -->
+    <li *ngFor="let doc of documentos">
+      <i class="fa fa-file"></i>
+      <!-- Mostramos la categoría (o el nombre) y creamos un link -->
+      <a [href]="buildFileUrl(doc.ruta_ftp)" target="_blank">
+        {{ doc.categoria }} - {{ doc.nombre }}
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+<br><br>
