@@ -1,15 +1,12 @@
 import { Component, OnInit, Inject, Renderer2 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-headeradmin',
   standalone : true,
   imports    : [
-    CommonModule,
-    RouterLink,          // <a routerLink> y <button routerLink>
-    RouterLinkActive     // routerLinkActive="active"
+    CommonModule
   ],
   templateUrl: './headeradmin.component.html',
   styleUrl: './headeradmin.component.css'

@@ -1,109 +1,123 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { SesionAdminService } from '../../services/session/sesionadmin.service';
+import { Router }            from '@angular/router';
+import { FormsModule }       from '@angular/forms';
+import { CommonModule }      from '@angular/common';
+import { RouterModule }      from '@angular/router';
 
-import {PersonaJuridica} from '../../models/persona-juridica';
-import {ApiserviceIndapService} from '../../services/apis/apiservice-indap.service';
-import { FichaselecionadaService} from '../../services/session/fichaselecionada.service';
+import { timer, EMPTY, of }  from 'rxjs';
+import { switchMap, map, take, catchError, finalize } from 'rxjs/operators';
+
+import { PersonaJuridica }           from '../../models/persona-juridica';
+import { ApiserviceIndapService }    from '../../services/apis/apiservice-indap.service';
+import { SesionAdminService }        from '../../services/session/sesionadmin.service';
+import { FichaselecionadaService }   from '../../services/session/fichaselecionada.service';
+import { LoadingService }            from '../../services/serviceui/loading.service';
 
 @Component({
-  selector: 'app-fichasasignadas',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  selector   : 'app-fichasasignadas',
+  standalone : true,
+  imports    : [CommonModule, FormsModule, RouterModule],
   templateUrl: './fichasasignadas.component.html',
-  styleUrls: ['./fichasasignadas.component.css']
+  styleUrls  : ['./fichasasignadas.component.css']
 })
-export class FichasasignadasComponent implements OnInit{
+export class FichasasignadasComponent implements OnInit {
 
-  personas: PersonaJuridica[] = [];
+  personas:          PersonaJuridica[] = [];
   personasFiltradas: PersonaJuridica[] = [];
-  filtro: string = "";
-  pagina: number = 1;
-  itemsPorPagina: number = 20;
-  ordenActual: string = "";
-  ordenAscendente: boolean = true;
+
+  filtro          = '';
+  pagina          = 1;
+  itemsPorPagina  = 20;
+  ordenActual:    keyof PersonaJuridica | '' = '';
+  ordenAscendente = true;
+
+  private datosCargados = false;
 
   constructor(
-    private router: Router,
-    private apiService: ApiserviceIndapService,
-    private sessionService: SesionAdminService,
-    private fichaSrv: FichaselecionadaService,
+    private router      : Router,
+    private apiService  : ApiserviceIndapService,
+    private sessionSrv  : SesionAdminService,
+    private fichaSrv    : FichaselecionadaService,
+    public  loader      : LoadingService
   ) {}
 
-
-
+  /* ════════════════════════════════════════════════════════════ */
   ngOnInit(): void {
-    const { regionId } = this.sessionService.getRegionData();
+    const MAX_INTENTOS = 5;     // cuántas veces reintenta
+    const RETARDO_MS   = 2000;  // intervalo entre reintentos
 
-    console.log('regionId:', regionId);  // ← IMPORTANTE para verificar
+    timer(0, RETARDO_MS).pipe(
+      take(MAX_INTENTOS),
 
-    if (!regionId) {
-      console.error('No se encontró regionId válido');
-      return;
-    }
+      /* 1) intentamos leer región y rutBase del servicio de sesión */
+      map(() => ({
+        regionId : this.sessionSrv.getRegionId(),   // number | null
+        rutBase  : this.sessionSrv.getRutBase()     // string | null
+      })),
 
-    // 2. Llamar al endpoint con estado "PendientedeRevision"
-    this.cargarPersonasPendientes(regionId);
-  }
+      /* 2) si falta algo aún, esperamos próxima emisión */
+      switchMap(({ regionId, rutBase }) => {
+        if (!regionId || !rutBase || this.datosCargados) {
+          return EMPTY;
+        }
 
-  /**
-   * Llama al endpoint GET /persona-juridica/region/{id_region}/estado/PendientedeRevision
-   * y asigna la respuesta a `this.personas` y luego filtra.
-   */
-  cargarPersonasPendientes(regionId: number): void {
-    // Ajusta si tu endpoint u objeto tiene distinto nombre de estado
-    const estado = 'PendientedeRevision';
-    this.apiService.consultarPersonasPorRegionYEstado(regionId, estado).subscribe({
-      next: (data) => {
-        console.log('✅ Datos recibidos (PendientedeRevision):', data);
-        this.personas = data;
-        this.filtrarPersonas();
-      },
-      error: (err) => {
-        console.error('❌ Error al cargar datos:', err);
-      }
+        this.datosCargados = true;       // evita más reintentos
+        this.loader.show();              // ⬅️ loader SOLO cuando partimos
+
+        /* 3) preguntamos al backend si el RUT está en usersistema */
+        return this.apiService.verificarUsuariosSistema([rutBase]).pipe(
+          map(arr => ({
+            esAdmin : arr[0]?.existe === true,
+            regionId
+          })),
+          catchError(() => of({ esAdmin: false, regionId })),
+
+          /* 4) según rol llamamos al endpoint adecuado */
+          switchMap(({ esAdmin, regionId }) => {
+            const ESTADO = 'PendientedeRevision';
+            return esAdmin
+              ? this.apiService.consultarPersonasPorEstado(ESTADO)
+              : this.apiService.consultarPersonasPorRegionYEstado(regionId, ESTADO);
+          }),
+
+          /* 5) cuando termina todo -> ocultamos loader */
+          finalize(() => this.loader.hide())
+        );
+      })
+    ).subscribe({
+      next : data  => { this.personas = data; this.filtrarPersonas(); },
+      error: err   => console.error('❌ Error obteniendo datos:', err)
     });
   }
 
-
-  seleccionarPersona(persona: any) {
-    console.log('Ficha seleccionada:', persona);
-    this.fichaSrv.setFichaSeleccionada(persona);
+  /* ════════════════════════════════════════════════════════════
+   *   UTILIDADES
+   * ════════════════════════════════════════════════════════════ */
+  seleccionarPersona(pj: PersonaJuridica) {
+    this.fichaSrv.setFichaSeleccionada(pj);
     this.router.navigate(['/datos-empresa']);
   }
 
-
   filtrarPersonas(): void {
+    const f = this.filtro.toLowerCase();
     this.personasFiltradas = this.personas.filter(p =>
       p.rut.includes(this.filtro) ||
-      p.nombre_razon_social.toLowerCase().includes(this.filtro.toLowerCase())
+      p.nombre_razon_social.toLowerCase().includes(f)
     );
   }
 
   ordenarPor(campo: keyof PersonaJuridica): void {
-    if (this.ordenActual === campo) {
-      this.ordenAscendente = !this.ordenAscendente;
-    } else {
-      this.ordenActual = campo;
-      this.ordenAscendente = true;
-    }
+    this.ordenAscendente = (this.ordenActual === campo) ? !this.ordenAscendente : true;
+    this.ordenActual = campo;
 
     this.personasFiltradas.sort((a, b) => {
-      let valorA = a[campo] as string;
-      let valorB = b[campo] as string;
-      return this.ordenAscendente
-        ? valorA.localeCompare(valorB)
-        : valorB.localeCompare(valorA);
+      const [A, B] = [String(a[campo]), String(b[campo])];
+      return this.ordenAscendente ? A.localeCompare(B) : B.localeCompare(A);
     });
   }
 
-  cambiarPagina(nuevaPagina: number): void {
-    const totalPaginas = Math.ceil(this.personasFiltradas.length / this.itemsPorPagina);
-    if (nuevaPagina > 0 && nuevaPagina <= totalPaginas) {
-      this.pagina = nuevaPagina;
-    }
+  cambiarPagina(n: number): void {
+    const total = Math.ceil(this.personasFiltradas.length / this.itemsPorPagina);
+    if (n > 0 && n <= total) { this.pagina = n; }
   }
 }
