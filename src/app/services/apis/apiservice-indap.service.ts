@@ -33,6 +33,22 @@ export class ApiserviceIndapService {
     );
   }
 
+  verificarUsuariosSistema(rutBases: string[]): Observable<any[]> {
+    if (!rutBases?.length) {
+      return of([]);
+    }
+    const peticiones = rutBases.map(rutBase =>
+      this.http
+        .get<any>(`${this.baseurl}/persona-juridica/existe/${rutBase}`)
+        .pipe(
+          catchError(() => of({ rut: rutBase, existe: false }))
+        )
+    );
+
+    // forkJoin las ejecuta en paralelo y entrega un único array con las respuestas
+    return forkJoin(peticiones);   // Observable<any[]>
+  }
+
   uploadRegistro1986(idFicha: number, file: File) {
     const formData = new FormData();
     formData.append('archivo', file);        // mismo nombre que usa el endpoint
@@ -55,7 +71,6 @@ export class ApiserviceIndapService {
     return this.http.get<any>(`${this.pjuridica}completa/${id_ficha}`);
   }
 
-
   obtenerPersonasJuridicas(skip: number = 0, limit: number = 100): Observable<PersonaJuridica[]> {
     return this.http.get<PersonaJuridica[]>(`${this.pjuridica}?skip=${skip}&limit=${limit}`);
   }
@@ -66,6 +81,12 @@ export class ApiserviceIndapService {
 
   obtenerFichaDocumentos(rut: string): Observable<any> {
     return this.http.get<any>(`${this.pjuridica}${rut}/ficha-documentos`);
+  }
+
+  consultarPersonasPorEstado(estado_ficha: string): Observable<PersonaJuridica[]> {
+    return this.http.get<PersonaJuridica[]>(
+      `${this.pjuridica}estado/${encodeURIComponent(estado_ficha)}`
+    );
   }
 
   consultarPersonasPorRegionYEstado(id_region: number, estado_ficha: string): Observable<PersonaJuridica[]> {

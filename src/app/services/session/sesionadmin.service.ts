@@ -6,6 +6,7 @@
  * ──────────────────────────────────────────────────────────────── */
 
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SesionAdminService {
@@ -17,6 +18,12 @@ export class SesionAdminService {
   private readonly REGION_ID_KEY   = 'adminRegionId';
   private readonly REGION_NAME_KEY = 'adminRegionName';
   private perfilActual: { codigo: number; perfil: string } | null = null;
+
+  // Stream interno que avisará cada vez que cambie la región
+  private regionSubject = new BehaviorSubject<{ regionId: number; regionName: string } | null>(null);
+
+// Observable público para que otros componentes puedan suscribirse
+  public  region$       = this.regionSubject.asObservable();
 
   /* helpers genéricos */
   private set(key: string, value: string)  { localStorage.setItem(key, value); }
@@ -108,8 +115,11 @@ export class SesionAdminService {
   /* ───────── Datos de región ───────── */
 
   storeRegionData(regionId: number, regionName: string): void {
-    this.set(this.REGION_ID_KEY, regionId.toString());
+    this.set(this.REGION_ID_KEY,   regionId.toString());
     this.set(this.REGION_NAME_KEY, regionName);
+
+    // 📣 notifica a quien esté escuchando
+    this.regionSubject.next({ regionId, regionName });
   }
 
   getRegionData(): { regionId: number; regionName: string } {
@@ -122,6 +132,26 @@ export class SesionAdminService {
   clearRegionData(): void {
     this.del(this.REGION_ID_KEY);
     this.del(this.REGION_NAME_KEY);
+
+    // 📣 deja el observable en estado “sin región”
+    this.regionSubject.next(null);
+  }
+  /** Devuelve el objeto `data` del payload JWT (o `null` si no existe) */
+  getUserData(): any | null {
+    const payload = this.getTokenPayload();
+    return payload && payload.data ? payload.data : null;
+  }
+
+  /** RUT completo con dígito verificador, p. ej. 16650344-2 */
+  getRut(): string | null {
+    const user = this.getUserData();
+    return user ? user.rut || null : null;
+  }
+
+  /** RUT **sin** dígito verificador, sólo números */
+  getRutBase(): string | null {
+    const rut = this.getRut();
+    return rut ? rut.replace(/\./g, '').replace('-', '').slice(0, -1) : null;
   }
 
   /* ───────── Limpieza total ───────── */
