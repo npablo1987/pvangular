@@ -14,16 +14,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'rfpIndap' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('rfpIndap');
-  });
-
-  it('should render title', () => {
+  // Basic sanity check only. Component has no `title` property by default.
+  it('should render without crashing', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, rfpIndap');
+    expect(fixture.nativeElement).toBeTruthy();
   });
 });
