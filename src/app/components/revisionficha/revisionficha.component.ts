@@ -8,6 +8,7 @@ import { inject } from '@angular/core';
 import {FichaselecionadaService} from '../../services/session/fichaselecionada.service';
 import {ApiserviceIndapService} from '../../services/apis/apiservice-indap.service';
 import {SesionAdminService} from '../../services/session/sesionadmin.service';
+import { MensajeOverlayService } from '../../services/serviceui/mensaje-overlay.service';
 import {saveAs} from 'file-saver';
 
 interface DocTabla {
@@ -49,7 +50,8 @@ export class RevisionfichaComponent implements OnInit {
 
   constructor(
     private fichaSrv : FichaselecionadaService,
-    private api      : ApiserviceIndapService
+    private api      : ApiserviceIndapService,
+    private msg      : MensajeOverlayService
   ) {
 
     console.log('[Revisionficha] constructor → session =', this.session);
@@ -75,7 +77,10 @@ export class RevisionfichaComponent implements OnInit {
     /* 2️⃣  User info desde el JWT */
     const userData = this.session.getTokenPayload()?.data;
     if (!userData) {
-      alert('La sesión ha expirado. Por favor vuelve a iniciar sesión.');
+      this.msg.show('La sesión ha expirado. Serás redirigido en 5 segundos.');
+      setTimeout(() => {
+        window.location.href = 'https://sistemas.indap.cl';
+      }, 5000);
       return;
     }
 
@@ -143,7 +148,7 @@ export class RevisionfichaComponent implements OnInit {
 
   guardar(doc: DocTabla) {
     if (!this.datosValidos(doc)) {
-      alert('Debes ingresar observación y fecha de vigencia.');
+      this.msg.show('Debes ingresar observación y fecha de vigencia.');
       return;
     }
 
@@ -164,7 +169,7 @@ export class RevisionfichaComponent implements OnInit {
 
   rechazarRevision() {
     if (!this.observacionDecision.trim()) {
-      alert('Por favor ingresa una observación para el rechazo.');
+      this.msg.show('Por favor ingresa una observación para el rechazo.');
       return;
     }
 
@@ -177,12 +182,12 @@ export class RevisionfichaComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          alert(`Ficha rechazada: ${res.estado}`);
+          this.msg.show(`Ficha rechazada: ${res.estado}`);
           // aquí podrías refrescar el listado, cerrar diálogo, etc.
         },
         error: (err) => {
           console.error(err);
-          alert('Error al rechazar la ficha');
+          this.msg.show('Error al rechazar la ficha');
         }
       });
   }
@@ -205,12 +210,12 @@ export class RevisionfichaComponent implements OnInit {
     )
       .subscribe({
         next: (res) => {
-          alert(`Ficha aprobada: ${res.estado}`);
+          this.msg.show(`Ficha aprobada: ${res.estado}`);
           // acciones posteriores...
         },
         error: (err) => {
           console.error(err);
-          alert('Error al aprobar la ficha');
+          this.msg.show('Error al aprobar la ficha');
         }
       });
   }
@@ -256,7 +261,7 @@ export class RevisionfichaComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        alert('No se pudo generar el certificado PDF');
+        this.msg.show('No se pudo generar el certificado PDF');
       }
     });
   }
