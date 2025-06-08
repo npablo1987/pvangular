@@ -10,12 +10,14 @@
 }
 
 .mensaje {
-  background: var(--color_blanco);
-  color: var(--color_text);
-  border: 2px solid var(--color_link_dark);
+  /* Estilo inspirado en el diseño del Gobierno de Chile */
+  background: var(--color_gob_azul);
+  color: var(--color_blanco);
+  border-left: 6px solid var(--color_gob_rojo);
   padding: 1.5rem 2rem;
   border-radius: 4px;
   max-width: 90%;
   text-align: center;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  font-family: var(--font_sans);
 }
