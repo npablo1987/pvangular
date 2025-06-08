@@ -11,6 +11,7 @@ import { ApiserviceIndapService }      from './services/apis/apiservice-indap.se
 import { LoadingService }              from './services/serviceui/loading.service';
 import { LoggerService }               from './services/logger/logger.service';
 import { CargandoOverlayComponent }    from './shared/cargando-overlay.component';
+import { MensajeOverlayComponent }     from './shared/mensaje-overlay.component';
 
 export interface PerfilDTO {
   codigo: string;
@@ -19,7 +20,13 @@ export interface PerfilDTO {
 @Component({
   selector   : 'app-root',
   standalone : true,
-  imports    : [CommonModule, RouterModule, HttpClientModule, CargandoOverlayComponent],
+  imports    : [
+    CommonModule,
+    RouterModule,
+    HttpClientModule,
+    CargandoOverlayComponent,
+    MensajeOverlayComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls  : ['./app.component.css']
 })
