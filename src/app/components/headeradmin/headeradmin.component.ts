@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, Renderer2 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonModule } from '@angular/common';
+import { SesionAdminService } from '../../services/session/sesionadmin.service';
 
 @Component({
   selector: 'app-headeradmin',
@@ -13,6 +14,8 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderadminComponent implements OnInit {
 
+  nombreUsuario: string | null = null;
+
   private nivelFuente = 0;
   private readonly maxFuente = 2;
   private readonly minFuente = 0;
@@ -20,6 +23,7 @@ export class HeaderadminComponent implements OnInit {
   constructor(
     @Inject(DOCUMENT) private readonly doc: Document,
     private readonly renderer: Renderer2,
+    private sessionSrv: SesionAdminService,
   ) {
 
   }
@@ -33,6 +37,16 @@ export class HeaderadminComponent implements OnInit {
       this.renderer.addClass(this.doc.documentElement, 'a11y-contrast');
     }
     this.aplicarFuente();
+
+    const data = this.sessionSrv.getUserData();
+    if (data) {
+      const nom = data.nombre || `${data.nombres ?? ''} ${data.apellido_paterno ?? ''} ${data.apellido_materno ?? ''}`;
+      try {
+        this.nombreUsuario = decodeURIComponent(escape(nom)).trim();
+      } catch {
+        this.nombreUsuario = nom.trim();
+      }
+    }
   }
 
   toggleContraste(ev: Event): void {
