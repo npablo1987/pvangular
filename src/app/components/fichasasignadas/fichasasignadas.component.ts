@@ -4,8 +4,8 @@ import { FormsModule }       from '@angular/forms';
 import { CommonModule }      from '@angular/common';
 import { RouterModule }      from '@angular/router';
 
-import { timer, EMPTY, of }  from 'rxjs';
-import { switchMap, map, take, catchError, finalize } from 'rxjs/operators';
+import { timer, EMPTY }  from 'rxjs';
+import { switchMap, map, take, finalize } from 'rxjs/operators';
 
 import { PersonaJuridica }           from '../../models/persona-juridica';
 import { ApiserviceIndapService }    from '../../services/apis/apiservice-indap.service';
@@ -49,40 +49,29 @@ export class FichasasignadasComponent implements OnInit {
     timer(0, RETARDO_MS).pipe(
       take(MAX_INTENTOS),
 
-      /* 1) intentamos leer región y rutBase del servicio de sesión */
+      /* 1) leemos región y flag de usersistema del servicio de sesión */
       map(() => ({
-        regionId : this.sessionSrv.getRegionId(),   // number | null
-        rutBase  : this.sessionSrv.getRutBase()     // string | null
+        regionId: this.sessionSrv.getRegionId(),      // number | null
+        esAdmin : this.sessionSrv.getUsuarioSistema() // boolean | null
       })),
 
-      /* 2) si falta algo aún, esperamos próxima emisión */
-      switchMap(({ regionId, rutBase }) => {
-        if (!regionId || !rutBase || this.datosCargados) {
+      /* 2) si aún falta información, esperamos próxima emisión */
+      switchMap(({ regionId, esAdmin }) => {
+        if (esAdmin === null || (!esAdmin && !regionId) || this.datosCargados) {
           return EMPTY;
         }
 
         this.datosCargados = true;       // evita más reintentos
         this.loader.show();              // ⬅️ loader SOLO cuando partimos
 
-        /* 3) preguntamos al backend si el RUT está en usersistema */
-        return this.apiService.verificarUsuariosSistema([rutBase]).pipe(
-          map(arr => ({
-            esAdmin : arr[0]?.existe === true,
-            regionId
-          })),
-          catchError(() => of({ esAdmin: false, regionId })),
+        /* 3) según rol llamamos al endpoint adecuado */
+        const ESTADO = 'PendientedeRevision';
+        const obs = esAdmin
+          ? this.apiService.consultarPersonasPorEstado(ESTADO)
+          : this.apiService.consultarPersonasPorRegionYEstado(regionId!, ESTADO);
 
-          /* 4) según rol llamamos al endpoint adecuado */
-          switchMap(({ esAdmin, regionId }) => {
-            const ESTADO = 'PendientedeRevision';
-            return esAdmin
-              ? this.apiService.consultarPersonasPorEstado(ESTADO)
-              : this.apiService.consultarPersonasPorRegionYEstado(regionId, ESTADO);
-          }),
-
-          /* 5) cuando termina todo -> ocultamos loader */
-          finalize(() => this.loader.hide())
-        );
+        /* 4) cuando termina todo -> ocultamos loader */
+        return obs.pipe(finalize(() => this.loader.hide()));
       })
     ).subscribe({
       next : data  => { this.personas = data; this.filtrarPersonas(); },

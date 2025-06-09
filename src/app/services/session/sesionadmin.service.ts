@@ -17,6 +17,7 @@ export class SesionAdminService {
   private readonly EXPIRES_AT_KEY  = 'adminTokenExpiresAt';
   private readonly REGION_ID_KEY   = 'adminRegionId';
   private readonly REGION_NAME_KEY = 'adminRegionName';
+  private readonly USUARIO_SISTEMA_KEY = 'adminEsUsuarioSistema';
   private perfilActual: { codigo: number; perfil: string } | null = null;
 
   // Stream interno que avisará cada vez que cambie la región
@@ -136,6 +137,24 @@ export class SesionAdminService {
     // 📣 deja el observable en estado “sin región”
     this.regionSubject.next(null);
   }
+
+  /* ───────── Usuario Sistema ───────── */
+  storeUsuarioSistema(flag: boolean): void {
+    this.set(this.USUARIO_SISTEMA_KEY, flag ? '1' : '0');
+  }
+
+  /**
+   * Devuelve `true` si el usuario pertenece a usersistema,
+   * `false` si no pertenece, o `null` si aún no se ha determinado.
+   */
+  getUsuarioSistema(): boolean | null {
+    const raw = this.get(this.USUARIO_SISTEMA_KEY);
+    return raw === null ? null : raw === '1';
+  }
+
+  clearUsuarioSistema(): void {
+    this.del(this.USUARIO_SISTEMA_KEY);
+  }
   /** Devuelve el objeto `data` del payload JWT (o `null` si no existe) */
   getUserData(): any | null {
     const payload = this.getTokenPayload();
@@ -160,6 +179,7 @@ export class SesionAdminService {
     this.clearToken();
     this.clearTokenPayload();
     this.clearRegionData();
+    this.clearUsuarioSistema();
   }
 
 

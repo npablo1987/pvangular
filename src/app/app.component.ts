@@ -3,8 +3,8 @@ import { RouterModule }                from '@angular/router';
 import { HttpClientModule }            from '@angular/common/http';
 import { CommonModule }                from '@angular/common';
 
-import { Observable, forkJoin }        from 'rxjs';
-import { map }                         from 'rxjs/operators';
+import { Observable, forkJoin, of }    from 'rxjs';
+import { map, catchError }             from 'rxjs/operators';
 
 import { SesionAdminService }          from './services/session/sesionadmin.service';
 import { ApiserviceIndapService }      from './services/apis/apiservice-indap.service';
@@ -112,10 +112,23 @@ export class AppComponent implements OnInit {
         this.sessionService.setPerfilActual(perfilValido);
         this.procesarDatosUsuario(data);
 
-        /* — NUEVO paso secuencial — */
-        this.obtenerRegionAsync(payload)
-          .catch(() => {/* el método ya redirige si falla */})
-          .finally(() => this.loader.hide());
+        /* ── Verifica si el usuario pertenece a usersistema ── */
+        const rutBase = this.sessionService.getRutBase();
+        this.apiService.verificarUsuariosSistema([rutBase]).pipe(
+          map(arr => arr[0]?.existe === true),
+          catchError(() => of(false))
+        ).subscribe({
+          next: esAdmin => {
+            this.sessionService.storeUsuarioSistema(esAdmin);
+            const prom = esAdmin
+              ? Promise.resolve().then(() => { this.regionReady = true; })
+              : this.obtenerRegionAsync(payload);
+            prom
+              .catch(() => {/* el método ya redirige si falla */})
+              .finally(() => this.loader.hide());
+          },
+          error: err2 => salirConError('error verificando usuario', err2)
+        });
       },
       error: err => {
         if (err?.message === 'perfil no reconocido') {
