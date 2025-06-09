@@ -9,6 +9,7 @@ import { map }                         from 'rxjs/operators';
 import { SesionAdminService }          from './services/session/sesionadmin.service';
 import { ApiserviceIndapService }      from './services/apis/apiservice-indap.service';
 import { LoadingService }              from './services/serviceui/loading.service';
+import { MensajeOverlayService }       from './services/serviceui/mensaje-overlay.service';
 import { LoggerService }               from './services/logger/logger.service';
 import { CargandoOverlayComponent }    from './shared/cargando-overlay.component';
 import { MensajeOverlayComponent }     from './shared/mensaje-overlay.component';
@@ -51,7 +52,8 @@ export class AppComponent implements OnInit {
     private sessionService: SesionAdminService,
     private apiService    : ApiserviceIndapService,
     public  loader        : LoadingService,
-    private logger        : LoggerService
+    private logger        : LoggerService,
+    private msg           : MensajeOverlayService
   ) {}
 
   /* ────────────────────────── LIFECYCLE ─────────────────────────────── */
@@ -117,7 +119,14 @@ export class AppComponent implements OnInit {
         this.obtenerRegionAsync(payload)
           .catch(() => {/* el método ya redirige si falla */});
       },
-      error: err => salirConError('error consultando perfil', err)
+      error: err => {
+        if (err?.message === 'perfil no reconocido') {
+          this.loader.hide();
+          this.msg.show('Perfil no encontrado');
+        } else {
+          salirConError('error consultando perfil', err);
+        }
+      }
     });
   }
 
