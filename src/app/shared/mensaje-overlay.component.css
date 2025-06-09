@@ -1,23 +1,17 @@
-.overlay {
+.modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: #0008;
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 1100;
+  align-items: center;
+  z-index: 1050;
 }
 
-.mensaje {
-  /* Estilo inspirado en el diseño del Gobierno de Chile */
-  background: var(--color_gob_azul);
-  color: var(--color_blanco);
-  border-left: 6px solid var(--color_gob_rojo);
-  padding: 1.5rem 2rem;
-  border-radius: 4px;
-  max-width: 90%;
+.modal-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  font-family: var(--font_sans);
+  width: 300px;
 }
