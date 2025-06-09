@@ -33,9 +33,6 @@ export interface PerfilDTO {
 })
 export class AppComponent implements OnInit {
 
-  /* ─── DEBUG ────────────────────────────────────────────────────────── */
-  public errorMessage: string | null = null;
-
   /* ─── Datos de usuario (header) ────────────────────────────────────── */
   nombreCompleto   : string | null = null;
   nombres          : string | null = null;
@@ -64,8 +61,8 @@ export class AppComponent implements OnInit {
     const salirConError = (msg: string, err?: any) => {
       const detail = err?.message || err?.statusText || JSON.stringify(err) || '';
       this.logger.error(`[Header] ${msg}`, err);
-      this.errorMessage = detail ? `${msg}: ${detail}` : msg;
-
+      const full = detail ? `${msg}: ${detail}` : msg;
+      this.redirigirSinSesion(full);
     };
 
     /* 0) ?token= -------------------------------------------------------- */
@@ -121,8 +118,7 @@ export class AppComponent implements OnInit {
       },
       error: err => {
         if (err?.message === 'perfil no reconocido') {
-          this.loader.hide();
-          this.msg.show('Perfil no encontrado');
+          this.redirigirSinSesion('Perfil no encontrado');
         } else {
           salirConError('error consultando perfil', err);
         }
@@ -154,7 +150,7 @@ export class AppComponent implements OnInit {
 
       const token = this.sessionService.getToken();
       if (!token) {
-        this.redirigirSinSesion();
+        this.redirigirSinSesion('Sesión expirada');
         return reject();
       }
 
@@ -167,7 +163,7 @@ export class AppComponent implements OnInit {
       };
       const ko = (e?: any) => {
         this.logger.error(e);
-        this.redirigirSinSesion();
+        this.redirigirSinSesion('No se pudo determinar la región');
         reject(e);
       };
 
@@ -241,10 +237,13 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private redirigirSinSesion(): void {
+  private redirigirSinSesion(motivo = 'Acceso no autorizado'): void {
     this.sessionService.clearAll();
     this.loader.hide();
-    window.location.href = 'https://sistemas.indap.cl';
+
+    this.msg.showCountdown(motivo, 5, () => {
+      window.location.href = 'https://sistemas.indap.cl';
+    });
   }
 
   logout(): void { this.redirigirSinSesion(); }
