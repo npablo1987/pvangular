@@ -33,7 +33,7 @@ export class ApiserviceIndapService {
     );
   }
 
-  verificarUsuariosSistema(rutBases: string[]): Observable<any[]> {
+  verificarUsuariosSistema(rutBases: (string | null)[]): Observable<any[]> {
     if (!rutBases?.length) {
       return of([]);
     }
