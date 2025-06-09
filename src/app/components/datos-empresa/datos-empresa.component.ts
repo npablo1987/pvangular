@@ -91,6 +91,8 @@ export class DatosEmpresaComponent implements OnInit  {
   }
 
   buildFileUrl(ruta: string): string {
-    return `${this.baseUrl}uploads/${ruta}`;
+    const base = this.baseUrl.replace(/\/$/, '');
+    const cleanRuta = ruta.replace(/^\/+/, '');
+    return `${base}/uploads/${cleanRuta}`;
   }
 }
