@@ -114,7 +114,8 @@ export class AppComponent implements OnInit {
 
         /* — NUEVO paso secuencial — */
         this.obtenerRegionAsync(payload)
-          .catch(() => {/* el método ya redirige si falla */});
+          .catch(() => {/* el método ya redirige si falla */})
+          .finally(() => this.loader.hide());
       },
       error: err => {
         if (err?.message === 'perfil no reconocido') {
