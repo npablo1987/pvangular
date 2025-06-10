@@ -42,9 +42,7 @@ export class HeaderadminComponent implements OnInit {
 
     const data = this.sessionSrv.getUserData();
     if (data) {
-      const primerNombre = `${data.nombres ?? ''}`.trim().split(/\s+/)[0] ?? '';
-      const primerApellido = `${data.apellido_paterno ?? ''}`.trim().split(/\s+/)[0] ?? '';
-      const nomCortoRaw = `${primerNombre} ${primerApellido}`.trim();
+      const nomCortoRaw = this.obtenerNombreCorto(data);
       try {
         this.nombreUsuario = this.decodeHtml(nomCortoRaw);
       } catch {
@@ -90,6 +88,16 @@ export class HeaderadminComponent implements OnInit {
   private decodeHtml(text: string): string {
     const txt = this.doc.createElement('textarea');
     txt.innerHTML = text;
-    return decodeURIComponent(escape(txt.value));
+    return txt.value;
+  }
+
+  private obtenerNombreCorto(data: any): string {
+    const nombreFull = `${data.nombre ?? ''}`.trim();
+    if (nombreFull) {
+      return nombreFull.split(/\s+/).slice(0, 2).join(' ');
+    }
+    const primerNombre = `${data.nombres ?? ''}`.trim().split(/\s+/)[0] ?? '';
+    const primerApellido = `${data.apellido_paterno ?? ''}`.trim().split(/\s+/)[0] ?? '';
+    return `${primerNombre} ${primerApellido}`.trim();
   }
 }
