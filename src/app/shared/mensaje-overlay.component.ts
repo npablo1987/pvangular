@@ -8,8 +8,8 @@ import { MensajeOverlayService } from '../services/serviceui/mensaje-overlay.ser
   imports: [CommonModule],
   template: `
     <div *ngIf="msgSvc.message$ | async as msg" class="modal-backdrop">
-      <div class="modal-box">
-        <p>{{ msg }}</p>
+      <div class="modal-box" [ngClass]="msg.type">
+        <p>{{ msg.text }}</p>
         <button class="btn btn-primary mt-3" (click)="msgSvc.hide()">Aceptar</button>
       </div>
     </div>

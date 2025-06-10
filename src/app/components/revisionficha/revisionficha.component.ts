@@ -161,9 +161,16 @@ export class RevisionfichaComponent implements OnInit {
     (doc.id_observacion_doc
         ? this.api.actualizarObservacionDoc(doc.id_observacion_doc, base)
         : this.api.crearObservacionDoc({ id_ficha: this.idFicha, id_documento: doc.id_documento, ...base })
-    ).subscribe((res: any) => {
-      if (res?.id_observacion_doc) { doc.id_observacion_doc = res.id_observacion_doc; }
-      doc.edit = false;
+    ).subscribe({
+      next: (res: any) => {
+        if (res?.id_observacion_doc) { doc.id_observacion_doc = res.id_observacion_doc; }
+        doc.edit = false;
+        this.msg.show('Observación guardada correctamente.', 'success');
+      },
+      error: (err) => {
+        console.error(err);
+        this.msg.show('Error al guardar la observación.', 'error');
+      }
     });
   }
 
