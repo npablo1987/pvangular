@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin  } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { PersonaJuridica } from '../../models/persona-juridica';
 import { environment } from '../../environments/environment';
 import { tap, catchError, of } from 'rxjs';
@@ -10,15 +10,30 @@ import { tap, catchError, of } from 'rxjs';
 
 export class ApiserviceIndapService {
 
-  private baseurl = environment.baseurl;
-  readonly apiRoot = environment.baseurl.replace(/\/$/, '');
-  private pjuridica = `${this.baseurl}/persona-juridica/`;
-  private urlendpontregion = `${this.baseurl}/rfpdata/consultaregionusuario`;
-  private urlendponintnombreregion = `${this.baseurl}/rfpdata/consultarnombreregion`;
-  private baseurllocation = environment.baseurl.replace(/\/$/, '');
-  private apiUrlLocation = `${this.baseurllocation}/location/`;
+  private readonly baseurl: string;
+  readonly apiRoot: string;
+  private pjuridica!: string;
+  private urlendpontregion!: string;
+  private urlendponintnombreregion!: string;
+  private baseurllocation!: string;
+  private apiUrlLocation!: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    // Ajusta protocolo (http -> https) según la página actual
+    const rawUrl = environment.baseurl.replace(/\/$/, '');
+    this.baseurl = (typeof window !== 'undefined' &&
+                    window.location.protocol === 'https:' &&
+                    rawUrl.startsWith('http:'))
+      ? 'https:' + rawUrl.substring('http:'.length)
+      : rawUrl;
+
+    this.apiRoot = this.baseurl;
+    this.pjuridica = `${this.baseurl}/persona-juridica/`;
+    this.urlendpontregion = `${this.baseurl}/rfpdata/consultaregionusuario`;
+    this.urlendponintnombreregion = `${this.baseurl}/rfpdata/consultarnombreregion`;
+    this.baseurllocation = this.baseurl;
+    this.apiUrlLocation = `${this.baseurllocation}/location/`;
+  }
 
 
   getPerfilPorCodigo(codigo: number | string) {
