@@ -42,12 +42,13 @@ export class HeaderadminComponent implements OnInit {
 
     const data = this.sessionSrv.getUserData();
     if (data) {
-      const nomCompleto = data.nombre || `${data.nombres ?? ''} ${data.apellido_paterno ?? ''} ${data.apellido_materno ?? ''}`;
-      const nomCorto = nomCompleto.trim().split(/\s+/).slice(0, 2).join(' ');
+      const primerNombre = `${data.nombres ?? ''}`.trim().split(/\s+/)[0] ?? '';
+      const primerApellido = `${data.apellido_paterno ?? ''}`.trim().split(/\s+/)[0] ?? '';
+      const nomCortoRaw = `${primerNombre} ${primerApellido}`.trim();
       try {
-        this.nombreUsuario = decodeURIComponent(escape(nomCorto)).trim();
+        this.nombreUsuario = this.decodeHtml(nomCortoRaw);
       } catch {
-        this.nombreUsuario = nomCorto.trim();
+        this.nombreUsuario = nomCortoRaw;
       }
     }
   }
@@ -84,5 +85,11 @@ export class HeaderadminComponent implements OnInit {
     ['a11y-font-0','a11y-font-1','a11y-font-2']
       .forEach(c => this.renderer.removeClass(html, c));
     this.renderer.addClass(html, `a11y-font-${this.nivelFuente}`);
+  }
+
+  private decodeHtml(text: string): string {
+    const txt = this.doc.createElement('textarea');
+    txt.innerHTML = text;
+    return decodeURIComponent(escape(txt.value));
   }
 }
