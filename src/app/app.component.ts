@@ -88,55 +88,60 @@ export class AppComponent implements OnInit {
       return salirConError('payload vacío');
     }
 
-    /* 2) Perfiles ------------------------------------------------------- */
-    const codigosPerfil = Array.isArray(data.perfilActual)
-      ? data.perfilActual
-      : [data.perfilActual];
-
-    if (!codigosPerfil.length) {
-      return salirConError('usuario sin perfiles');
-    }
-
-    forkJoin<({codigo: number; perfil: string} | null)[]>(
-      codigosPerfil.map((c: string | number) => this.apiService.getPerfilPorCodigo(c))
-    ).pipe(
-      map(perfiles => {
-        const perfilValido = perfiles.find(
-          (p): p is {codigo: number; perfil: string} => !!(p && p.perfil)
-        );
-        if (!perfilValido) { throw new Error('perfil no reconocido'); }
-        return perfilValido;
-      })
+    /* 2) Perfil o administrador --------------------------------------- */
+    const rutBase = this.sessionService.getRutBase();
+    this.apiService.verificarUsuariosSistema([rutBase]).pipe(
+      map(arr => arr[0]?.existe === true),
+      catchError(() => of(false))
     ).subscribe({
-      next: perfilValido => {
-        this.sessionService.setPerfilActual(perfilValido);
-        this.procesarDatosUsuario(data);
+      next: esAdmin => {
+        this.sessionService.storeUsuarioSistema(esAdmin);
+        if (esAdmin) {
+          const perfilAdmin = { codigo: 99, perfil: 'Usuario Administrador' };
+          this.sessionService.setPerfilActual(perfilAdmin);
+          this.procesarDatosUsuario(data);
+          Promise.resolve()
+            .then(() => { this.regionReady = true; })
+            .finally(() => this.loader.hide());
+          return;
+        }
 
-        /* ── Verifica si el usuario pertenece a usersistema ── */
-        const rutBase = this.sessionService.getRutBase();
-        this.apiService.verificarUsuariosSistema([rutBase]).pipe(
-          map(arr => arr[0]?.existe === true),
-          catchError(() => of(false))
+        const codigosPerfil = Array.isArray(data.perfilActual)
+          ? data.perfilActual
+          : [data.perfilActual];
+
+        if (!codigosPerfil.length) {
+          return salirConError('usuario sin perfiles');
+        }
+
+        forkJoin<({codigo: number; perfil: string} | null)[]>(
+          codigosPerfil.map((c: string | number) => this.apiService.getPerfilPorCodigo(c))
+        ).pipe(
+          map(perfiles => {
+            const perfilValido = perfiles.find(
+              (p): p is {codigo: number; perfil: string} => !!(p && p.perfil)
+            );
+            if (!perfilValido) { throw new Error('perfil no reconocido'); }
+            return perfilValido;
+          })
         ).subscribe({
-          next: esAdmin => {
-            this.sessionService.storeUsuarioSistema(esAdmin);
-            const prom = esAdmin
-              ? Promise.resolve().then(() => { this.regionReady = true; })
-              : this.obtenerRegionAsync(payload);
-            prom
+          next: perfilValido => {
+            this.sessionService.setPerfilActual(perfilValido);
+            this.procesarDatosUsuario(data);
+            this.obtenerRegionAsync(payload)
               .catch(() => {/* el método ya redirige si falla */})
               .finally(() => this.loader.hide());
           },
-          error: err2 => salirConError('error verificando usuario', err2)
+          error: err => {
+            if (err?.message === 'perfil no reconocido') {
+              this.redirigirSinSesion('Perfil no encontrado');
+            } else {
+              salirConError('error consultando perfil', err);
+            }
+          }
         });
       },
-      error: err => {
-        if (err?.message === 'perfil no reconocido') {
-          this.redirigirSinSesion('Perfil no encontrado');
-        } else {
-          salirConError('error consultando perfil', err);
-        }
-      }
+      error: err2 => salirConError('error verificando usuario', err2)
     });
   }
 
