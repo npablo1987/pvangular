@@ -15,3 +15,11 @@
   text-align: center;
   width: 300px;
 }
+
+.modal-box.success p {
+  color: var(--color_exito);
+}
+
+.modal-box.error p {
+  color: var(--color_error);
+}

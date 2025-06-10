@@ -1,15 +1,24 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+export interface MensajeOverlayData {
+  text: string;
+  type: 'success' | 'error' | 'info';
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class MensajeOverlayService {
-  private msgSubject = new BehaviorSubject<string | null>(null);
+  private msgSubject = new BehaviorSubject<MensajeOverlayData | null>(null);
   message$ = this.msgSubject.asObservable();
 
-  show(msg: string, durationMs = 5000) {
-    this.msgSubject.next(msg);
+  show(
+    msg: string,
+    type: 'success' | 'error' | 'info' = 'info',
+    durationMs = 5000
+  ) {
+    this.msgSubject.next({ text: msg, type });
     if (durationMs > 0) {
       setTimeout(() => this.hide(), durationMs);
     }
@@ -22,7 +31,7 @@ export class MensajeOverlayService {
   showCountdown(msg: string, seconds: number, onFinish?: () => void) {
     let restante = seconds;
     const actualizar = () => {
-      this.show(`${msg} Redirigiendo en ${restante} s…`, 0);
+      this.show(`${msg} Redirigiendo en ${restante} s…`, 'info', 0);
     };
 
     actualizar();
