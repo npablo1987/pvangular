@@ -2,12 +2,14 @@ import { Component, OnInit, Inject, Renderer2 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { SesionAdminService } from '../../services/session/sesionadmin.service';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-headeradmin',
   standalone : true,
-  imports    : [
-    CommonModule
+  imports: [
+    CommonModule,
+    RouterLink
   ],
   templateUrl: './headeradmin.component.html',
   styleUrl: './headeradmin.component.css'
