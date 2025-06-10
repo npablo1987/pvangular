@@ -16,7 +16,7 @@ import {RouterLink} from '@angular/router';
 })
 export class HeaderadminComponent implements OnInit {
 
-  nombreUsuario: string | null = null;
+  nombreUsuario = 'Usuario';
 
   private nivelFuente = 0;
   private readonly maxFuente = 2;
@@ -92,12 +92,20 @@ export class HeaderadminComponent implements OnInit {
   }
 
   private obtenerNombreCorto(data: any): string {
+    const altNombres  = data?.respuesta_xml?.documento?.datosPersonal?.nombre?.nombres;
+    const altApellido = data?.respuesta_xml?.documento?.datosPersonal?.nombre?.apellidoPaterno;
+    if (altNombres || altApellido) {
+      return `${altNombres ?? ''} ${altApellido ?? ''}`.trim();
+    }
+
     const nombreFull = `${data.nombre ?? ''}`.trim();
     if (nombreFull) {
       return nombreFull.split(/\s+/).slice(0, 2).join(' ');
     }
-    const primerNombre = `${data.nombres ?? ''}`.trim().split(/\s+/)[0] ?? '';
+
+    const primerNombre   = `${data.nombres ?? ''}`.trim().split(/\s+/)[0] ?? '';
     const primerApellido = `${data.apellido_paterno ?? ''}`.trim().split(/\s+/)[0] ?? '';
-    return `${primerNombre} ${primerApellido}`.trim();
+    const res = `${primerNombre} ${primerApellido}`.trim();
+    return res || data?.rut_enviado || '';
   }
 }
