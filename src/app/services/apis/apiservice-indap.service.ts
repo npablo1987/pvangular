@@ -35,6 +35,11 @@ export class ApiserviceIndapService {
     this.apiUrlLocation = `${this.baseurllocation}/location/`;
   }
 
+  /** Obtiene la URL base actual (ajustada a HTTPS si corresponde). */
+  getBaseUrl(): string {
+    return this.baseurl;
+  }
+
 
   getPerfilPorCodigo(codigo: number | string) {
     const url = `${this.baseurl.replace(/\/$/, '')}/persona-juridica/perfil/${codigo}`;
