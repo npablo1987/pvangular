@@ -9,7 +9,8 @@ import { environment } from '../environments/environment';
 @Injectable()
 export class ForceHttpsInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (environment.production && req.url.startsWith('http://')) {
+    const pageIsHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    if (pageIsHttps && req.url.startsWith('http://')) {
       const secureUrl = 'https://' + req.url.substring('http://'.length);
       const secureReq = req.clone({ url: secureUrl });
       return next.handle(secureReq);

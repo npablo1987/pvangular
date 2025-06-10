@@ -23,7 +23,7 @@ import {MenuadminComponent} from '../menuadmin/menuadmin.component';
 export class DatosEmpresaComponent implements OnInit  {
 
 
-  private baseUrl = environment.baseurl;
+  private baseUrl = '';
   empresaForm: FormGroup;
   documentos: any[] = [];
   fichaCorta: any = null;
@@ -50,6 +50,9 @@ export class DatosEmpresaComponent implements OnInit  {
   }
 
   ngOnInit(): void {
+
+    // Usar la URL base calculada por el servicio para evitar "mixed content"
+    this.baseUrl = this.apiService.getBaseUrl();
 
     this.fichaCorta = this.fichaSrv.fichaSeleccionadaValue;
     console.log('Ficha corta recibida:', this.fichaCorta);
