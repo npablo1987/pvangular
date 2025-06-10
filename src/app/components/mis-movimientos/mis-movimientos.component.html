@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <h2>Mis Movimientos</h2>
+
+  <table class="table" *ngIf="movimientos.length; else sinDatos">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Ficha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of movimientos">
+        <td>{{ m.fecha | date:'shortDate' }}</td>
+        <td>{{ m.estado }}</td>
+        <td>
+          <a [routerLink]="['/datos-empresa']" [queryParams]="{ ficha: m.id_ficha }">
+            Ver ficha
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #sinDatos>
+    <p *ngIf="!cargando">No se encontraron movimientos.</p>
+  </ng-template>
+</div>

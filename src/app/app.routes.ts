@@ -47,6 +47,11 @@ export const routes: Routes = [
           loadComponent: () =>
             import('./components/certificado/certificado.component').then(m => m.CertificadoComponent),
         }
+        {
+          path: 'mis-movimientos',
+          loadComponent: () =>
+            import('./components/mis-movimientos/mis-movimientos.component').then(m => m.MisMovimientosComponent),
+        },
 
 
     ],
