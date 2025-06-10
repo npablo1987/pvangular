@@ -46,7 +46,7 @@ export const routes: Routes = [
           path: 'certificado',
           loadComponent: () =>
             import('./components/certificado/certificado.component').then(m => m.CertificadoComponent),
-        }
+        },
         {
           path: 'mis-movimientos',
           loadComponent: () =>
