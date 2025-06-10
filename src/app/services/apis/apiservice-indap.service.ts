@@ -193,6 +193,11 @@ export class ApiserviceIndapService {
     return this.http.get(url, { responseType: 'blob' });
   }
 
+  /** Obtiene los movimientos del usuario identificado por su rut base */
+  obtenerMovimientosPorRut(rutBase: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.pjuridica}movimientos/${rutBase}`);
+  }
+
   uploadCertificadoRFP(
     idFicha: number,
     file: File,
