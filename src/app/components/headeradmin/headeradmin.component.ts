@@ -42,11 +42,12 @@ export class HeaderadminComponent implements OnInit {
 
     const data = this.sessionSrv.getUserData();
     if (data) {
-      const nom = data.nombre || `${data.nombres ?? ''} ${data.apellido_paterno ?? ''} ${data.apellido_materno ?? ''}`;
+      const nomCompleto = data.nombre || `${data.nombres ?? ''} ${data.apellido_paterno ?? ''} ${data.apellido_materno ?? ''}`;
+      const nomCorto = nomCompleto.trim().split(/\s+/).slice(0, 2).join(' ');
       try {
-        this.nombreUsuario = decodeURIComponent(escape(nom)).trim();
+        this.nombreUsuario = decodeURIComponent(escape(nomCorto)).trim();
       } catch {
-        this.nombreUsuario = nom.trim();
+        this.nombreUsuario = nomCorto.trim();
       }
     }
   }

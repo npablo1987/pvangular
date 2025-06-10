@@ -1,0 +1,7 @@
+/* Estilo para el nombre de usuario en el header */
+.header-usuario {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
