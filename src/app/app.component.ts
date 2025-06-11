@@ -150,12 +150,15 @@ export class AppComponent implements OnInit {
     const cap = (t: string|null|undefined) =>
       t ? t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() : null;
 
+    const decode = (v: string | null | undefined) => this.decodeHtml(v ?? '');
+
     if (data.nombre) {
-      this.nombreCompleto = data.nombre.split(' ').map(cap).join(' ').trim();
+      const limpio = decode(data.nombre);
+      this.nombreCompleto = limpio.split(' ').map(cap).join(' ').trim();
     } else {
-      this.nombres         = cap(data.nombres);
-      this.apellidoPaterno = cap(data.apellido_paterno);
-      this.apellidoMaterno = cap(data.apellido_materno);
+      this.nombres         = cap(decode(data.nombres));
+      this.apellidoPaterno = cap(decode(data.apellido_paterno));
+      this.apellidoMaterno = cap(decode(data.apellido_materno));
       this.nombreCompleto  = [this.nombres, this.apellidoPaterno, this.apellidoMaterno]
         .filter(Boolean).join(' ') || null;
     }
@@ -233,6 +236,12 @@ export class AppComponent implements OnInit {
 
   private capitalizar(txt: string): string {
     return txt ? txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase() : '';
+  }
+
+  private decodeHtml(text: string): string {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = text;
+    return txt.value;
   }
 
   /* ─────────────────── Sesión / JWT helpers (igual) ────────────────── */
