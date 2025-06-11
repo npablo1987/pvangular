@@ -14,9 +14,7 @@
         <td>{{ m.fecha | date:'shortDate' }}</td>
         <td>{{ m.estado }}</td>
         <td>
-          <a [routerLink]="['/datos-empresa']" [queryParams]="{ ficha: m.id_ficha }">
-            Ver ficha
-          </a>
+          <a href="javascript:void(0)" (click)="verFicha(m)">Ver ficha</a>
         </td>
       </tr>
     </tbody>

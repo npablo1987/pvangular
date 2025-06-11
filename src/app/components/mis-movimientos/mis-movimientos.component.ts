@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ApiserviceIndapService } from '../../services/apis/apiservice-indap.service';
 import { SesionAdminService } from '../../services/session/sesionadmin.service';
+import { FichaselecionadaService } from '../../services/session/fichaselecionada.service';
 
 @Component({
   selector: 'app-mis-movimientos',
@@ -17,7 +18,9 @@ export class MisMovimientosComponent implements OnInit {
 
   constructor(
     private api: ApiserviceIndapService,
-    private session: SesionAdminService
+    private session: SesionAdminService,
+    private fichaSrv: FichaselecionadaService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -29,5 +32,11 @@ export class MisMovimientosComponent implements OnInit {
       error: err => console.error('Error obteniendo movimientos', err),
       complete: () => { this.cargando = false; }
     });
+  }
+
+  verFicha(mov: any): void {
+    if (!mov?.id_ficha) { return; }
+    this.fichaSrv.setFichaSeleccionada({ id_ficha: mov.id_ficha });
+    this.router.navigate(['/datos-empresa']);
   }
 }
