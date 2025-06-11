@@ -15,6 +15,8 @@ import { FichaselecionadaService } from '../../services/session/fichaselecionada
 export class MisMovimientosComponent implements OnInit {
   movimientos: any[] = [];
   cargando = false;
+  errorMsg = '';
+  warningMsg = '';
 
   constructor(
     private api: ApiserviceIndapService,
@@ -27,9 +29,19 @@ export class MisMovimientosComponent implements OnInit {
     const rutBase = this.session.getRutBase();
     if (!rutBase) { return; }
     this.cargando = true;
+    this.errorMsg = '';
+    this.warningMsg = '';
     this.api.obtenerMovimientosPorRut(rutBase).subscribe({
-      next: data => { this.movimientos = data || []; },
-      error: err => console.error('Error obteniendo movimientos', err),
+      next: data => {
+        this.movimientos = data || [];
+        if (!this.movimientos.length) {
+          this.warningMsg = 'No se encontraron movimientos.';
+        }
+      },
+      error: err => {
+        console.error('Error obteniendo movimientos', err);
+        this.errorMsg = 'Ocurri\u00f3 un error al obtener los movimientos.';
+      },
       complete: () => { this.cargando = false; }
     });
   }

@@ -1,7 +1,15 @@
 <div class="container mt-4">
   <h2>Mis Movimientos</h2>
 
-  <table class="table" *ngIf="movimientos.length; else sinDatos">
+  <div *ngIf="errorMsg" class="alert alert-danger" role="alert">
+    {{ errorMsg }}
+  </div>
+
+  <div *ngIf="warningMsg && !errorMsg" class="alert alert-warning" role="alert">
+    {{ warningMsg }}
+  </div>
+
+  <table class="table" *ngIf="movimientos.length">
     <thead>
       <tr>
         <th>Fecha</th>
@@ -19,8 +27,4 @@
       </tr>
     </tbody>
   </table>
-
-  <ng-template #sinDatos>
-    <p *ngIf="!cargando">No se encontraron movimientos.</p>
-  </ng-template>
 </div>
