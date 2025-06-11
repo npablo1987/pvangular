@@ -100,8 +100,8 @@ export class AppComponent implements OnInit {
           const perfilAdmin = { codigo: 99, perfil: 'Usuario Administrador' };
           this.sessionService.setPerfilActual(perfilAdmin);
           this.procesarDatosUsuario(data);
-          Promise.resolve()
-            .then(() => { this.regionReady = true; })
+          this.obtenerRegionAsync(payload)
+            .catch(() => { /* el método ya redirige si falla */ })
             .finally(() => this.loader.hide());
           return;
         }
