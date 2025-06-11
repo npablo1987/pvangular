@@ -22,9 +22,6 @@ export class ApiserviceIndapService {
 
   constructor(private http: HttpClient) {
 
-
-
-    // Ajusta protocolo (http -> https) según la página actual
     const rawUrl = environment.baseurl.replace(/\/$/, '');
 
     this.baseurl = rawUrl;
