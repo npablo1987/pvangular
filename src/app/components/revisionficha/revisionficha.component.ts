@@ -147,7 +147,13 @@ export class RevisionfichaComponent implements OnInit {
 
 
   guardar(doc: DocTabla) {
+    console.log('[guardar] Iniciando guardado para documento:', doc);
+
     if (!this.datosValidos(doc)) {
+      console.warn('[guardar] Datos inválidos - observación o fecha de vigencia faltante:', {
+        observacion: doc.observacion,
+        fecha_vigencia: doc.fecha_vigencia
+      });
       this.msg.show('Debes ingresar observación y fecha de vigencia.');
       return;
     }
@@ -158,17 +164,36 @@ export class RevisionfichaComponent implements OnInit {
       id_usuario_modificacion: this.idUsuario,
     };
 
-    (doc.id_observacion_doc
-        ? this.api.actualizarObservacionDoc(doc.id_observacion_doc, base)
-        : this.api.crearObservacionDoc({ id_ficha: this.idFicha, id_documento: doc.id_documento, ...base })
-    ).subscribe({
+    console.log('[guardar] Datos válidos. Payload base a enviar:', base);
+    console.log('[guardar] ID de observación existente:', doc.id_observacion_doc);
+
+    const peticion$ = doc.id_observacion_doc
+      ? this.api.actualizarObservacionDoc(doc.id_observacion_doc, base)
+      : this.api.crearObservacionDoc({
+        id_ficha: this.idFicha,
+        id_documento: doc.id_documento,
+        ...base
+      });
+
+    console.log('[guardar] Llamando a API con operación:',
+      doc.id_observacion_doc ? 'Actualizar' : 'Crear');
+
+    peticion$.subscribe({
       next: (res: any) => {
-        if (res?.id_observacion_doc) { doc.id_observacion_doc = res.id_observacion_doc; }
+        console.log('[guardar] Respuesta exitosa de API:', res);
+
+        if (res?.id_observacion_doc) {
+          doc.id_observacion_doc = res.id_observacion_doc;
+          console.log('[guardar] Se ha asignado nuevo id_observacion_doc:', res.id_observacion_doc);
+        }
+
         doc.edit = false;
+        console.log('[guardar] Documento actualizado localmente. edit = false');
+
         this.msg.show('Observación guardada correctamente.', 'success');
       },
       error: (err) => {
-        console.error(err);
+        console.error('[guardar] Error al guardar la observación:', err);
         this.msg.show('Error al guardar la observación.', 'error');
       }
     });

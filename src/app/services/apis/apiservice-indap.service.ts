@@ -17,15 +17,18 @@ export class ApiserviceIndapService {
   private urlendponintnombreregion!: string;
   private baseurllocation!: string;
   private apiUrlLocation!: string;
+  private readonly baseurldoc = environment.baseurl;
+  private readonly obsRoot = `${this.baseurldoc}/observaciondoc`; // raíz del recurso
 
   constructor(private http: HttpClient) {
+
+
+
     // Ajusta protocolo (http -> https) según la página actual
     const rawUrl = environment.baseurl.replace(/\/$/, '');
-    this.baseurl = (typeof window !== 'undefined' &&
-                    window.location.protocol === 'https:' &&
-                    rawUrl.startsWith('http:'))
-      ? 'https:' + rawUrl.substring('http:'.length)
-      : rawUrl;
+
+    this.baseurl = rawUrl;
+
 
     this.apiRoot = this.baseurl;
     this.pjuridica = `${this.baseurl}/persona-juridica/`;
@@ -151,18 +154,32 @@ export class ApiserviceIndapService {
     id_ficha: number;
     id_documento: number;
     observacion?: string;
-    fecha_vigencia?: string;        // 'YYYY-MM-DD'
-    id_usuario_modificacion: number;
-  }) {
-    return this.http.post<any>(`${this.baseurl.replace(/\/$/, '')}/observaciondoc`, payload);
-  }
-
-  actualizarObservacionDoc(id: number, payload: {
-    observacion?: string;
     fecha_vigencia?: string;
     id_usuario_modificacion: number;
-  }) {
-    return this.http.put<any>(`${this.baseurl.replace(/\/$/, '')}/observaciondoc/${id}`, payload);
+  }): Observable<any> {
+    const url = `${this.obsRoot}/`;                          // ← barra final
+    console.log('[crearObservacionDoc] URL:', url);
+    return this.http.post<any>(url, payload).pipe(
+      tap(res => console.log('[crearObservacionDoc] ✔︎', res)),
+      catchError(err => { console.error('[crearObservacionDoc] ✖︎', err); throw err; })
+    );
+  }
+
+  /** Actualizar observación: PUT https://…/observaciondoc/{id}  */
+  actualizarObservacionDoc(
+    id_observacion: number,
+    payload: {
+      observacion?: string;
+      fecha_vigencia?: string;
+      id_usuario_modificacion: number;
+    }
+  ): Observable<any> {
+    const url = `${this.obsRoot}/${id_observacion}`;        // ← sin replace(), sin barra final extra
+    console.log('[actualizarObservacionDoc] URL:', url);
+    return this.http.put<any>(url, payload).pipe(
+      tap(res => console.log('[actualizarObservacionDoc] ✔︎', res)),
+      catchError(err => { console.error('[actualizarObservacionDoc] ✖︎', err); throw err; })
+    );
   }
 
   cambiarEstadoFicha(
