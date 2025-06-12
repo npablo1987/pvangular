@@ -145,26 +145,44 @@ export class AppComponent implements OnInit {
     });
   }
 
-  /* ──────────────────── DATOS DE USUARIO ────────────────────────────── */
   private procesarDatosUsuario(data: any): void {
-    const cap = (t: string|null|undefined) =>
+    const cap = (t: string | null | undefined) =>
       t ? t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() : null;
 
-    const decode = (v: string | null | undefined) =>
-      this.normalizarNombre(this.decodeHtml(v ?? ''));
+    const limpiar = (v: string | null | undefined) =>
+      cap(this.limpiarTextoUsuario(v));
 
     if (data.nombre) {
-      const limpio = decode(data.nombre);
-      this.nombreCompleto = limpio.split(' ').map(cap).join(' ').trim();
+      const limpio = this.limpiarTextoUsuario(data.nombre);
+      this.nombreCompleto = limpio?.split(' ').map(cap).join(' ') || null;
+      /* 👉 Sobrescribir en el payload para que toda la app vea el valor limpio */
+      data.nombre = this.nombreCompleto;
     } else {
-      this.nombres         = cap(decode(data.nombres));
-      this.apellidoPaterno = cap(decode(data.apellido_paterno));
-      this.apellidoMaterno = cap(decode(data.apellido_materno));
+      this.nombres         = limpiar(data.nombres);
+      this.apellidoPaterno = limpiar(data.apellido_paterno);
+      this.apellidoMaterno = limpiar(data.apellido_materno);
       this.nombreCompleto  = [this.nombres, this.apellidoPaterno, this.apellidoMaterno]
         .filter(Boolean).join(' ') || null;
+
+      // 👉 Sobrescribir campos individuales en el payload
+      data.nombres          = this.nombres;
+      data.apellido_paterno = this.apellidoPaterno;
+      data.apellido_materno = this.apellidoMaterno;
     }
+
     this.rut  = data.rut  || null;
     this.nick = data.nick || null;
+
+    // 🔄 Guardar nombre limpio en la sesión para uso global
+    this.sessionService.setNombreUsuario(this.nombreCompleto ?? '');
+
+    /* 🔄 Actualizar el payload completo dentro de la sesión,
+         para que cualquier `getTokenPayload()` posterior ya venga limpio */
+    const payloadActual = this.sessionService.getTokenPayload();
+    if (payloadActual && payloadActual.data) {
+      payloadActual.data = { ...data };          // clonar valores actualizados
+      this.sessionService.setTokenPayload(payloadActual);
+    }
   }
 
   /* ─────────── NUEVA FUNCIÓN: región como Promise<void> ─────────────── */
@@ -286,6 +304,28 @@ export class AppComponent implements OnInit {
       return false;
     }
   }
+
+  private limpiarTextoUsuario(texto: string | null | undefined): string | null {
+    if (!texto) { return null; }
+
+    // 1. Decodificar entidades HTML “normales” (&Eacute;, &ntilde;, …)
+    let limpio = this.decodeHtml(texto);
+
+    // 2. Corregir pseudo-entidades mal escritas (&EACUTE;, &OACUTE;, …)
+    const accentMap: Record<string, string> = {
+      'A': 'Á', 'a': 'á', 'E': 'É', 'e': 'é',
+      'I': 'Í', 'i': 'í', 'O': 'Ó', 'o': 'ó',
+      'U': 'Ú', 'u': 'ú', 'N': 'Ñ', 'n': 'ñ'
+    };
+    limpio = limpio.replace(/&([AEIOUNaeioun])ACUTE;/g, (_, letra) => accentMap[letra] || _);
+    limpio = limpio.replace(/&([Nn])TILDE;/g,  (_, letra) => accentMap[letra] || _);
+
+    // 3. Arreglar texto mal interpretado como Latin-1
+    limpio = this.normalizarNombre(limpio);
+
+    return limpio.trim();
+  }
+
 
   private redirigirSinSesion(motivo = 'Acceso no autorizado'): void {
     this.sessionService.clearAll();

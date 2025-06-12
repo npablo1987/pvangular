@@ -182,5 +182,8 @@ export class SesionAdminService {
     this.clearUsuarioSistema();
   }
 
+  setNombreUsuario(nombre: string): void {
+    localStorage.setItem('nombreUsuario', nombre);
+  }
 
 }
