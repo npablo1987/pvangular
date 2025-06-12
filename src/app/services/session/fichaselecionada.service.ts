@@ -10,6 +10,7 @@ export class FichaselecionadaService {
 
   private fichaSeleccionada$ = new BehaviorSubject<any>(null);
   private fichaCompleta$     = new BehaviorSubject<any>(null);
+  private fichasPendientes$ = new BehaviorSubject<number>(0);
 
   constructor() {
     const selRaw  = localStorage.getItem(this.SELECTED_KEY);
@@ -63,10 +64,24 @@ export class FichaselecionadaService {
     return this.fichaCompleta$.asObservable();
   }
 
+  /** Número de fichas pendientes */
+  public setFichasPendientesCount(n: number): void {
+    this.fichasPendientes$.next(n);
+  }
+
+  public getFichasPendientes$(): Observable<number> {
+    return this.fichasPendientes$.asObservable();
+  }
+
+  public get fichasPendientesValue(): number {
+    return this.fichasPendientes$.value;
+  }
+
   /** Limpia todos los datos almacenados */
   public clear(): void {
     this.fichaSeleccionada$.next(null);
     this.fichaCompleta$.next(null);
+    this.fichasPendientes$.next(0);
     localStorage.removeItem(this.SELECTED_KEY);
     localStorage.removeItem(this.COMPLETA_KEY);
   }

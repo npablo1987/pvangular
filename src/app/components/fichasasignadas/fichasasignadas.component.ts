@@ -74,7 +74,11 @@ export class FichasasignadasComponent implements OnInit {
         return obs.pipe(finalize(() => this.loader.hide()));
       })
     ).subscribe({
-      next : data  => { this.personas = data; this.filtrarPersonas(); },
+      next : data  => {
+        this.personas = data;
+        this.fichaSrv.setFichasPendientesCount(data?.length || 0);
+        this.filtrarPersonas();
+      },
       error: err   => console.error('❌ Error obteniendo datos:', err)
     });
   }
