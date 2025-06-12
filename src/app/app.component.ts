@@ -150,7 +150,8 @@ export class AppComponent implements OnInit {
     const cap = (t: string|null|undefined) =>
       t ? t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() : null;
 
-    const decode = (v: string | null | undefined) => this.decodeHtml(v ?? '');
+    const decode = (v: string | null | undefined) =>
+      this.normalizarNombre(this.decodeHtml(v ?? ''));
 
     if (data.nombre) {
       const limpio = decode(data.nombre);
@@ -242,6 +243,27 @@ export class AppComponent implements OnInit {
     const txt = document.createElement('textarea');
     txt.innerHTML = text;
     return txt.value;
+  }
+
+  /**
+   * Verifica y corrige nombres que provienen con una codificación
+   * incorrecta (p. ej. tildes como "JosÃ©"). Devuelve el texto legible
+   * en UTF‑8. Si no detecta fallos devuelve la cadena original.
+   */
+  private normalizarNombre(texto: string): string {
+    if (!texto) { return texto; }
+
+    // Si contiene caracteres típicos de una mala interpretación de UTF‑8
+    const tieneErrores = /Ã|Â|¤|¸|¢|œ|¥|¨|«|®|µ/.test(texto);
+    if (!tieneErrores) { return texto; }
+
+    try {
+      // reinterpreta la cadena como Latin‑1 y decodifica en UTF‑8
+      // eslint-disable-next-line deprecation/deprecation
+      return decodeURIComponent(escape(texto));
+    } catch {
+      return texto;
+    }
   }
 
   /* ─────────────────── Sesión / JWT helpers (igual) ────────────────── */
