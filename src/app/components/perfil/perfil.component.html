@@ -4,11 +4,15 @@
     <div class="card-body" *ngIf="datos">
       <dl class="row">
         <dt class="col-sm-4">Nombre Completo</dt>
-        <dd class="col-sm-8">{{ datos.nombres }} {{ datos.apellido_paterno }} {{ datos.apellido_materno }}</dd>
+        <dd class="col-sm-8">{{ nombreCompleto }}</dd>
         <dt class="col-sm-4">RUT</dt>
         <dd class="col-sm-8">{{ datos.rut }}</dd>
+        <dt class="col-sm-4">Nick</dt>
+        <dd class="col-sm-8">{{ datos.nick }}</dd>
         <dt class="col-sm-4">Región</dt>
         <dd class="col-sm-8">{{ region }}</dd>
+        <dt class="col-sm-4">Perfil Activo</dt>
+        <dd class="col-sm-8">{{ perfilActual?.perfil }}</dd>
       </dl>
       <div *ngIf="esAdmin" class="alert alert-info mt-3">Usuario Administrador</div>
     </div>
