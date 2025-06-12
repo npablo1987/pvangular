@@ -52,6 +52,11 @@ export const routes: Routes = [
           loadComponent: () =>
             import('./components/mis-movimientos/mis-movimientos.component').then(m => m.MisMovimientosComponent),
         },
+        {
+          path: 'perfil',
+          loadComponent: () =>
+            import('./components/perfil/perfil.component').then(m => m.PerfilComponent),
+        },
 
 
     ],

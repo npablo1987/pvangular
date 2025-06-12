@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, Renderer2 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { SesionAdminService } from '../../services/session/sesionadmin.service';
+import { FichaselecionadaService } from '../../services/session/fichaselecionada.service';
 import {RouterLink} from '@angular/router';
 
 @Component({
@@ -17,6 +18,7 @@ import {RouterLink} from '@angular/router';
 export class HeaderadminComponent implements OnInit {
 
   nombreUsuario = 'Usuario';
+  pendingCount = 0;
 
   private nivelFuente = 0;
   private readonly maxFuente = 2;
@@ -26,6 +28,7 @@ export class HeaderadminComponent implements OnInit {
     @Inject(DOCUMENT) private readonly doc: Document,
     private readonly renderer: Renderer2,
     private sessionSrv: SesionAdminService,
+    private fichaSrv: FichaselecionadaService,
   ) {
 
   }
@@ -49,6 +52,10 @@ export class HeaderadminComponent implements OnInit {
         this.nombreUsuario = nomCortoRaw;
       }
     }
+
+    this.fichaSrv.getFichasPendientes$().subscribe(n => {
+      this.pendingCount = n;
+    });
   }
 
   toggleContraste(ev: Event): void {
@@ -75,6 +82,12 @@ export class HeaderadminComponent implements OnInit {
     this.nivelFuente = nuevo;
     localStorage.setItem('nivelFuente', String(nuevo));
     this.aplicarFuente();
+  }
+
+  logout(ev?: Event): void {
+    if (ev) { ev.preventDefault(); }
+    this.sessionSrv.clearAll();
+    window.location.href = 'https://sistemas.indap.cl';
   }
 
   /* -------- Helpers -------- */
