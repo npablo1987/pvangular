@@ -97,12 +97,11 @@ export class AppComponent implements OnInit {
       next: esAdmin => {
         this.sessionService.storeUsuarioSistema(esAdmin);
         if (esAdmin) {
-          const perfilAdmin = { codigo: 99, perfil: 'Usuario Administrador' };
+          const perfilAdmin = { codigo: 99, perfil: 'Administrador RFP' };
           this.sessionService.setPerfilActual(perfilAdmin);
           this.procesarDatosUsuario(data);
-          this.obtenerRegionAsync(payload)
-            .catch(() => { /* el método ya redirige si falla */ })
-            .finally(() => this.loader.hide());
+          this.habilitarTodasLasRegiones();
+          this.loader.hide();
           return;
         }
 
@@ -251,6 +250,15 @@ export class AppComponent implements OnInit {
     this.sessionService.storeRegionData(id, nombre);
     this.regionReady = true;
     this.logger.info(`[Header] Región resuelta: #${id} - ${nombre}`);
+  }
+
+  /** Configura la sesión para acceso a todas las regiones */
+  private habilitarTodasLasRegiones(): void {
+    const nombre = 'Todas las regiones';
+    this.sessionService.storeRegionData(0, nombre);
+    this.nombreRegion = nombre;
+    this.regionReady = true;
+    this.logger.info('[Header] Acceso a todas las regiones habilitado');
   }
 
   private capitalizar(txt: string): string {
