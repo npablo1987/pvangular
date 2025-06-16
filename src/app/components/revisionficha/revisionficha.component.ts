@@ -15,6 +15,7 @@ interface DocTabla {
   id_documento: number;
   nombre: string;
   categoria?: string;
+  ruta_ftp?: string;
   id_observacion_doc?: number;
   observacion?: string;
   fecha_vigencia?: string;
@@ -93,7 +94,8 @@ export class RevisionfichaComponent implements OnInit {
     this.documentos = (fichaCompleta.documentos || []).map((d: any) => ({
       id_documento: d.id_documento,
       nombre      : d.nombre,
-      categoria   : d.categoria
+      categoria   : d.categoria,
+      ruta_ftp    : d.ruta_ftp
     }));
 
     this.registro1986Cargado = this.documentos.some(
@@ -292,6 +294,14 @@ export class RevisionfichaComponent implements OnInit {
         this.mensaje = '❌ Error: ' + (err.error?.detail || 'no se pudo subir');
         this.subiendo = false;
       }
+    });
+  }
+
+  descargarDocumento(doc: DocTabla) {
+    if (!doc.ruta_ftp) { return; }
+    this.api.downloadDocumento(doc.ruta_ftp).subscribe(blob => {
+      const nombre = doc.nombre || 'archivo';
+      saveAs(blob, nombre);
     });
   }
 
