@@ -15,6 +15,7 @@ interface DocTabla {
   id_documento: number;
   nombre: string;
   categoria?: string;
+  ruta_ftp?: string;
   id_observacion_doc?: number;
   observacion?: string;
   fecha_vigencia?: string;
@@ -36,6 +37,7 @@ interface DocTabla {
 })
 export class RevisionfichaComponent implements OnInit {
   private session = inject(SesionAdminService);
+  private baseUrl = '';
   documentos: DocTabla[] = [];
   historial: any[] = [];
   observacionDecision: string = '';
@@ -63,6 +65,9 @@ export class RevisionfichaComponent implements OnInit {
   ngOnInit(): void {
 
     console.log('[Revisionficha] ngOnInit > session =', this.session);
+
+    // URL base para construir enlaces de descarga
+    this.baseUrl = this.api.getBaseUrl();
 
     /* LOG 3 ─ comprobar si el método existe */
     console.log('[Revisionficha] typeof getTokenPayload =',
@@ -93,7 +98,8 @@ export class RevisionfichaComponent implements OnInit {
     this.documentos = (fichaCompleta.documentos || []).map((d: any) => ({
       id_documento: d.id_documento,
       nombre      : d.nombre,
-      categoria   : d.categoria
+      categoria   : d.categoria,
+      ruta_ftp    : d.ruta_ftp
     }));
 
     this.registro1986Cargado = this.documentos.some(
@@ -294,6 +300,13 @@ export class RevisionfichaComponent implements OnInit {
       }
     });
   }
+
+  buildFileUrl(ruta: string): string {
+    const base = this.baseUrl.replace(/\/$/, '');
+    const clean = ruta ? ruta.replace(/^\/+/, '') : '';
+    return `${base}/uploads/${clean}`;
+  }
+
 
   descargarCertificado() {
     if (!this.idFicha) { return; }

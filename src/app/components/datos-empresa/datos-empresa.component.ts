@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+
 import {ApiserviceIndapService} from '../../services/apis/apiservice-indap.service';
 import {FichaselecionadaService} from '../../services/session/fichaselecionada.service';
 import {environment} from '../../environments/environment';
@@ -98,4 +99,5 @@ export class DatosEmpresaComponent implements OnInit  {
     const cleanRuta = ruta.replace(/^\/+/, '');
     return `${base}/uploads/${cleanRuta}`;
   }
+
 }

@@ -74,8 +74,8 @@
     <!-- Recorremos 'documentos' con *ngFor -->
     <li *ngFor="let doc of documentos">
       <i class="fa fa-file"></i>
-      <!-- Mostramos la categoría (o el nombre) y creamos un link -->
-      <a [href]="buildFileUrl(doc.ruta_ftp)" target="_blank">
+      <!-- Mostramos la categoría (o el nombre) y habilitamos descarga directa -->
+      <a [href]="buildFileUrl(doc.ruta_ftp)" download>
         {{ doc.categoria }} - {{ doc.nombre }}
       </a>
     </li>
