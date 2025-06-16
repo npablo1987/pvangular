@@ -36,6 +36,10 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
+## Environment modes
+
+The application uses Angular's environment files to toggle between development and production. The `envName` property inside `environment` indicates the current mode. When running in development the console output is verbose so you can follow each step of the application. For production builds all log messages are automatically suppressed.
+
 ## Running unit tests
 
 To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
