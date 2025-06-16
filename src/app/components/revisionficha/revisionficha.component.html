@@ -123,19 +123,7 @@
   </table>
   <hr>
 
-  <!-- Observaciones -->
-  <div class="mb-3">
-    <label for="observaciones" class="form-label"><strong>Observaciones:</strong></label>
-    <textarea
-      class="form-control"
-      id="observaciones"
-      name="observaciones"
-      rows="3"
-      [(ngModel)]="observacionDecision"
-      placeholder="Documento está fuera de vigencia">
-      </textarea>
-  </div>
-  <hr>
+
 
   <h3 class="mt-4">Historial de la ficha</h3>
 
@@ -164,6 +152,19 @@
     </tr>
     </tbody>
   </table>
+  <!-- Observaciones -->
+  <hr>
+  <div class="mb-3">
+    <h3 class="mt-4">Observaciones</h3>
+    <textarea
+      class="form-control"
+      id="observaciones"
+      name="observaciones"
+      rows="3"
+      [(ngModel)]="observacionDecision"
+      placeholder="Documento está fuera de vigencia">
+      </textarea>
+  </div>
   <hr>
 
   <div class="d-flex justify-content-end gap-2"
@@ -188,8 +189,5 @@
     </button>
   </div>
 
-  <!-- Revisión Financiera -->
-  <hr>
-  <h3 class="mt-4">Revisión Financiera</h3>
-  <p>Pendiente.</p>
+
 </div>
