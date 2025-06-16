@@ -212,6 +212,7 @@ export class ApiserviceIndapService {
     return this.http.get(url, { responseType: 'blob' });
   }
 
+
   /** Descarga un archivo desde la ruta relativa entregada */
   downloadDocumento(rutaRelativa: string) {
     const base = this.baseurl.replace(/\/$/, '');
