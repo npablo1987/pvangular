@@ -1,8 +1,15 @@
 <app-headeradmin></app-headeradmin>
-<div *ngIf="pendientes > 0" class="alert alert-warning text-center m-0">
-  Estas fichas requieren atención,
-  <a routerLink="/fichasasignadas" class="alert-link">presione aquí</a>
-  para revisarlas.
+<div *ngIf="pendientes > 0 && showAlert" class="alert-container">
+  <div class="container">
+    <div class="alert alert-warning text-center m-0 position-relative" role="alert">
+      Estas fichas requieren atención,
+      <a routerLink="/fichasasignadas" class="alert-link">presione aquí</a>
+      para revisarlas.
+      <button type="button" class="close-btn" aria-label="Cerrar" (click)="dismissAlert()">
+        &times;
+      </button>
+    </div>
+  </div>
 </div>
 <router-outlet></router-outlet>
 <!-- <app-fichasasignadas></app-fichasasignadas> -->
