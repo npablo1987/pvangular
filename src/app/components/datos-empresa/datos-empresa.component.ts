@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 
+import { saveAs } from 'file-saver';
+
 import {ApiserviceIndapService} from '../../services/apis/apiservice-indap.service';
 import {FichaselecionadaService} from '../../services/session/fichaselecionada.service';
 import {environment} from '../../environments/environment';
@@ -100,4 +102,11 @@ export class DatosEmpresaComponent implements OnInit  {
     return `${base}/uploads/${cleanRuta}`;
   }
 
+  descargarDocumento(doc: any) {
+    if (!doc?.ruta_ftp) { return; }
+    this.apiService.downloadDocumento(doc.ruta_ftp).subscribe(blob => {
+      const nombre = doc.nombre || 'archivo';
+      saveAs(blob, nombre);
+    });
+  }
 }

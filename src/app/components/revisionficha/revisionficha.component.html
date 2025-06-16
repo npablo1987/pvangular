@@ -82,9 +82,10 @@
     </thead>
     <tbody>
     <tr *ngFor="let doc of documentos">
-      <!-- nombre documento: descarga directa del archivo -->
+      <!-- nombre documento: permite descargar -->
       <td>
-        <a [href]="buildFileUrl(doc.ruta_ftp)" class="text-primary" download>
+        <a href="" class="text-primary"
+           (click)="descargarDocumento(doc); $event.preventDefault()">
           {{ doc.nombre }}
         </a>
       </td>

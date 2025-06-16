@@ -308,6 +308,15 @@ export class RevisionfichaComponent implements OnInit {
   }
 
 
+
+  descargarDocumento(doc: DocTabla) {
+    if (!doc.ruta_ftp) { return; }
+    this.api.downloadDocumento(doc.ruta_ftp).subscribe(blob => {
+      const nombre = doc.nombre || 'archivo';
+      saveAs(blob, nombre);
+    });
+  }
+
   descargarCertificado() {
     if (!this.idFicha) { return; }
 

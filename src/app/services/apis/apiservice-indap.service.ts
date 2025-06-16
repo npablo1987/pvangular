@@ -213,6 +213,14 @@ export class ApiserviceIndapService {
   }
 
 
+  /** Descarga un archivo desde la ruta relativa entregada */
+  downloadDocumento(rutaRelativa: string) {
+    const base = this.baseurl.replace(/\/$/, '');
+    const cleanRuta = rutaRelativa.replace(/^\/+/, '');
+    const url = `${base}/uploads/${cleanRuta}`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
+
   /** Obtiene los movimientos del usuario identificado por su rut base */
   obtenerMovimientosPorRut(rutBase: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.pjuridica}movimientos/${rutBase}`);

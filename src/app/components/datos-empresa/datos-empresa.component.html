@@ -74,8 +74,8 @@
     <!-- Recorremos 'documentos' con *ngFor -->
     <li *ngFor="let doc of documentos">
       <i class="fa fa-file"></i>
-      <!-- Mostramos la categoría (o el nombre) y habilitamos descarga directa -->
-      <a [href]="buildFileUrl(doc.ruta_ftp)" download>
+      <!-- Mostramos la categoría (o el nombre) y ofrecemos descarga -->
+      <a href="" (click)="descargarDocumento(doc); $event.preventDefault()">
         {{ doc.categoria }} - {{ doc.nombre }}
       </a>
     </li>
