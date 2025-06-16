@@ -311,10 +311,12 @@ export class RevisionfichaComponent implements OnInit {
 
   descargarDocumento(doc: DocTabla) {
     if (!doc.ruta_ftp) { return; }
-    this.api.downloadDocumento(doc.ruta_ftp).subscribe(blob => {
-      const nombre = doc.nombre || 'archivo';
-      saveAs(blob, nombre);
-    });
+    const url = this.buildFileUrl(doc.ruta_ftp);
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.click();
   }
 
   descargarCertificado() {
