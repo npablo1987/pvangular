@@ -1,0 +1,16 @@
+/* Alert container inside header width */
+.alert-container .alert {
+  position: relative;
+  padding-right: 2.5rem;
+}
+
+.alert-container .close-btn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
