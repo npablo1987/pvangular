@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  envName: 'production',
   // Usamos una URL relativa al protocolo para evitar problemas de
   // "mixed content" si el backend redirecciona entre http y https
   baseurl: "https://rfp-backend.qa.k24.indap.cl",

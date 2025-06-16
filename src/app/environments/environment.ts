@@ -1,6 +1,7 @@
 
 export const environment = {
   production: false,
+  envName: 'development',
   baseurlocal: "http://localhost:4300/",
   baseurl: "http://localhost:8000",
   claveUnica: {
