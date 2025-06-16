@@ -43,6 +43,7 @@ export class RevisionfichaComponent implements OnInit {
   subiendo   = false;
   mensaje    = '';
   mostrarAcciones = true;
+  puedeDescargar = false;
   idUsuario!: number;                     // ← ahora será el RUT sin DV
   registro1986Cargado = false;
 
@@ -128,7 +129,22 @@ export class RevisionfichaComponent implements OnInit {
     console.log('[Revisionficha] buscamos   :', buscadoNorm);
     console.log('[Revisionficha] en historial:', halladoEnHist);
 
+
     this.mostrarAcciones = !(estadoFicha.includes(buscadoNorm) || halladoEnHist);
+
+    const aprobadoFinanzas =
+      estadoFicha.includes('aprobado - finanzas') ||
+      this.historial.some(h =>
+        this.normalizar(h.estado).includes('aprobado - finanzas')
+      );
+
+    const aprobadoJuridica =
+      estadoFicha.includes('aprobado - juridica') ||
+      this.historial.some(h =>
+        this.normalizar(h.estado).includes('aprobado - juridica')
+      );
+
+    this.puedeDescargar = aprobadoFinanzas && aprobadoJuridica;
 
 
 
