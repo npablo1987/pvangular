@@ -147,6 +147,12 @@ export class ApiserviceIndapService {
     return this.http.get<any[]>(`${this.baseurl.replace(/\/$/, '')}/observaciondoc/ficha/${idFicha}`);
   }
 
+  /** ¿Ficha aprobada por Jurídica y Finanzas? */
+  fichaAprobadaJuridicaFinanzas(idFicha: number) {
+    const url = `${this.obsRoot}/aprobadosjuridicayfiannzas/${idFicha}`;
+    return this.http.get<{ id_ficha: number; aprobado: boolean }>(url);
+  }
+
   crearObservacionDoc(payload: {
     id_ficha: number;
     id_documento: number;
