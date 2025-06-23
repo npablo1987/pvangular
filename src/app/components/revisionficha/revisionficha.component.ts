@@ -138,19 +138,15 @@ export class RevisionfichaComponent implements OnInit {
 
     this.mostrarAcciones = !(estadoFicha.includes(buscadoNorm) || halladoEnHist);
 
-    const aprobadoFinanzas =
-      estadoFicha.includes('aprobado - finanzas') ||
-      this.historial.some(h =>
-        this.normalizar(h.estado).includes('aprobado - finanzas')
-      );
-
-    const aprobadoJuridica =
-      estadoFicha.includes('aprobado - juridica') ||
-      this.historial.some(h =>
-        this.normalizar(h.estado).includes('aprobado - juridica')
-      );
-
-    this.puedeDescargar = aprobadoFinanzas && aprobadoJuridica;
+    this.api
+      .fichaAprobadaJuridicaFinanzas(this.idFicha)
+      .subscribe({
+        next : ({ aprobado }) => { this.puedeDescargar = aprobado; },
+        error: err => {
+          console.error('[Revisionficha] Error verificando aprobación', err);
+          this.puedeDescargar = false;
+        }
+      });
 
 
 
