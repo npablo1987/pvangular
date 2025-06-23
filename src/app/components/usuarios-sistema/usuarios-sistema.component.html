@@ -66,6 +66,7 @@
         <th>Región</th>
         <th>Cargo</th>
         <th>Unidad</th>
+        <th>Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -77,8 +78,16 @@
         <td>{{ u.cargo }}</td>
         <td>{{ u.unidad }}</td>
         <td>
+          <span *ngIf="u.estado; else deshabilitado" class="badge badge-success">Activo</span>
+          <ng-template #deshabilitado>
+            <span class="badge badge-secondary">Inactivo</span>
+          </ng-template>
+        </td>
+        <td>
           <button class="btn btn-sm btn-link" (click)="editar(u)">Editar</button>
-          <button class="btn btn-sm btn-link text-danger" (click)="eliminar(u.id_usersistema)">Eliminar</button>
+          <button class="btn btn-sm btn-link" (click)="cambiarEstado(u)">
+            {{ u.estado ? 'Deshabilitar' : 'Habilitar' }}
+          </button>
         </td>
       </tr>
     </tbody>
