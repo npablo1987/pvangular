@@ -6,3 +6,8 @@
 .card form input {
   font-size: 0.875rem;
 }
+
+.card form {
+  max-width: 800px;
+  margin: 0 auto;
+}
