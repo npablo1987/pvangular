@@ -92,13 +92,13 @@ export class UsuariosSistemaComponent implements OnInit {
     }
   }
 
-  eliminar(id: number): void {
-    if (!confirm('¿Eliminar usuario?')) { return; }
+  cambiarEstado(u: any): void {
     const token = this.session.getToken();
     if (!token) { return; }
-    this.api.eliminarUsuarioSistema(id, token).subscribe({
-      next: () => this.cargarUsuarios(),
-      error: err => console.error('Error eliminando', err)
+    const nuevoEstado = !u.estado;
+    this.api.cambiarEstadoUsuarioSistema(u.id_usersistema, nuevoEstado, token).subscribe({
+      next: () => { u.estado = nuevoEstado; },
+      error: err => console.error('Error cambiando estado', err)
     });
   }
 }

@@ -288,4 +288,16 @@ export class ApiserviceIndapService {
     return this.http.delete(`${this.apiRoot}/usersistema/${id}`, { headers });
   }
 
+  /** Cambia el estado habilitado/deshabilitado del usuario */
+  cambiarEstadoUsuarioSistema(id: number, estado: boolean, token: string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      token
+    };
+    const body = { estado };
+    return this.http.put<any>(`${this.apiRoot}/usersistema/${id}/estado`, body, {
+      headers
+    });
+  }
+
 }
