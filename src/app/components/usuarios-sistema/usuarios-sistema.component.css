@@ -1,1 +1,8 @@
-/* estilos básicos para la tabla de usuarios */
+/* Estilos para Usuarios Sistema */
+.table {
+  font-size: 0.9rem;
+}
+
+.card form input {
+  font-size: 0.875rem;
+}
