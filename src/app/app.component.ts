@@ -97,11 +97,26 @@ export class AppComponent implements OnInit {
       next: esAdmin => {
         this.sessionService.storeUsuarioSistema(esAdmin);
         if (esAdmin) {
-          const perfilAdmin = { codigo: 99, perfil: 'Administrador RFP' };
-          this.sessionService.setPerfilActual(perfilAdmin);
-          this.procesarDatosUsuario(data);
-          this.habilitarTodasLasRegiones();
-          this.loader.hide();
+          const token = this.sessionService.getToken();
+          if (!token) {
+            return salirConError('sesión expirada');
+          }
+          this.apiService.listarUsuariosSistema(token).subscribe({
+            next: usuarios => {
+              const actual = usuarios.find(u =>
+                u.rut?.replace(/\./g, '').replace('-', '').slice(0, -1) === rutBase
+              );
+              if (actual && actual.estado === false) {
+                return this.redirigirSinSesion('Usuario deshabilitado');
+              }
+              const perfilAdmin = { codigo: 99, perfil: 'Administrador RFP' };
+              this.sessionService.setPerfilActual(perfilAdmin);
+              this.procesarDatosUsuario(data);
+              this.habilitarTodasLasRegiones();
+              this.loader.hide();
+            },
+            error: err => salirConError('error consultando usuario', err)
+          });
           return;
         }
 
