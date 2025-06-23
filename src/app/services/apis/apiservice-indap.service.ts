@@ -243,4 +243,26 @@ export class ApiserviceIndapService {
     return this.http.post<any>(url, formData);
   }
 
+  /* ──────────────── Usersistema CRUD ──────────────── */
+
+  listarUsuariosSistema(skip = 0, limit = 100) {
+    return this.http.get<any[]>(`${this.apiRoot}/usersistema/?skip=${skip}&limit=${limit}`);
+  }
+
+  obtenerUsuarioSistema(id: number) {
+    return this.http.get<any>(`${this.apiRoot}/usersistema/${id}`);
+  }
+
+  crearUsuarioSistema(data: any) {
+    return this.http.post<any>(`${this.apiRoot}/usersistema/`, data);
+  }
+
+  actualizarUsuarioSistema(id: number, cambios: any) {
+    return this.http.put<any>(`${this.apiRoot}/usersistema/${id}`, cambios);
+  }
+
+  eliminarUsuarioSistema(id: number) {
+    return this.http.delete(`${this.apiRoot}/usersistema/${id}`);
+  }
+
 }

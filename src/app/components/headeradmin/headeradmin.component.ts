@@ -19,6 +19,7 @@ export class HeaderadminComponent implements OnInit {
 
   nombreUsuario = 'Usuario';
   pendingCount = 0;
+  esAdmin: boolean | null = null;
 
   private nivelFuente = 0;
   private readonly maxFuente = 2;
@@ -52,6 +53,8 @@ export class HeaderadminComponent implements OnInit {
         this.nombreUsuario = nomCortoRaw;
       }
     }
+
+    this.esAdmin = this.sessionSrv.getUsuarioSistema();
 
     this.fichaSrv.getFichasPendientes$().subscribe(n => {
       this.pendingCount = n;
