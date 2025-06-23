@@ -40,7 +40,12 @@ export class UsuariosSistemaComponent implements OnInit {
   }
 
   cargarUsuarios(): void {
-    this.api.listarUsuariosSistema().subscribe({
+    const token = this.session.getToken();
+    if (!token) {
+      this.errorMsg = 'Sesión expirada';
+      return;
+    }
+    this.api.listarUsuariosSistema(token).subscribe({
       next: data => { this.usuarios = data || []; },
       error: err => {
         console.error('Error cargando usuarios', err);
@@ -69,14 +74,19 @@ export class UsuariosSistemaComponent implements OnInit {
   }
 
   guardar(): void {
+    const token = this.session.getToken();
+    if (!token) {
+      this.errorMsg = 'Sesión expirada';
+      return;
+    }
     const payload = { ...this.form };
     if (this.editId) {
-      this.api.actualizarUsuarioSistema(this.editId, payload).subscribe({
+      this.api.actualizarUsuarioSistema(this.editId, payload, token).subscribe({
         next: () => { this.cancelar(); this.cargarUsuarios(); },
         error: err => console.error('Error actualizando', err)
       });
     } else {
-      this.api.crearUsuarioSistema(payload).subscribe({
+      this.api.crearUsuarioSistema(payload, token).subscribe({
         next: () => { this.cancelar(); this.cargarUsuarios(); },
         error: err => console.error('Error creando', err)
       });
@@ -85,7 +95,9 @@ export class UsuariosSistemaComponent implements OnInit {
 
   eliminar(id: number): void {
     if (!confirm('¿Eliminar usuario?')) { return; }
-    this.api.eliminarUsuarioSistema(id).subscribe({
+    const token = this.session.getToken();
+    if (!token) { return; }
+    this.api.eliminarUsuarioSistema(id, token).subscribe({
       next: () => this.cargarUsuarios(),
       error: err => console.error('Error eliminando', err)
     });
