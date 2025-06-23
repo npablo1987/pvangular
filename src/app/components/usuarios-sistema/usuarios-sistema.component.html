@@ -8,28 +8,46 @@
       <form (ngSubmit)="guardar()">
         <div class="row g-3">
           <div class="col-md-6">
-            <input type="text" class="form-control form-control-sm" name="numero_region" [(ngModel)]="form.numero_region" placeholder="N° Región" />
+            <div class="form-floating">
+              <input id="numeroRegion" type="text" class="form-control form-control-sm" name="numero_region" [(ngModel)]="form.numero_region" placeholder="N° Región" />
+              <label for="numeroRegion">N° Región</label>
+            </div>
           </div>
           <div class="col-md-6">
-            <input type="number" class="form-control form-control-sm" name="inregion" [(ngModel)]="form.inregion" placeholder="Id Región" />
+            <div class="form-floating">
+              <input id="region" type="text" class="form-control form-control-sm" name="region" [(ngModel)]="form.region" placeholder="Región" />
+              <label for="region">Región</label>
+            </div>
           </div>
           <div class="col-md-6">
-            <input type="text" class="form-control form-control-sm" name="region" [(ngModel)]="form.region" placeholder="Región" />
+            <div class="form-floating">
+              <input id="nombre" type="text" class="form-control form-control-sm" name="nombre" [(ngModel)]="form.nombre" placeholder="Nombre" />
+              <label for="nombre">Nombre</label>
+            </div>
           </div>
           <div class="col-md-6">
-            <input type="text" class="form-control form-control-sm" name="nombre" [(ngModel)]="form.nombre" placeholder="Nombre" />
+            <div class="form-floating">
+              <input id="correo" type="email" class="form-control form-control-sm" name="correo" [(ngModel)]="form.correo" placeholder="Correo" />
+              <label for="correo">Correo</label>
+            </div>
           </div>
           <div class="col-md-6">
-            <input type="email" class="form-control form-control-sm" name="correo" [(ngModel)]="form.correo" placeholder="Correo" />
+            <div class="form-floating">
+              <input id="cargo" type="text" class="form-control form-control-sm" name="cargo" [(ngModel)]="form.cargo" placeholder="Cargo" />
+              <label for="cargo">Cargo</label>
+            </div>
           </div>
           <div class="col-md-6">
-            <input type="text" class="form-control form-control-sm" name="cargo" [(ngModel)]="form.cargo" placeholder="Cargo" />
+            <div class="form-floating">
+              <input id="unidad" type="text" class="form-control form-control-sm" name="unidad" [(ngModel)]="form.unidad" placeholder="Unidad" />
+              <label for="unidad">Unidad</label>
+            </div>
           </div>
           <div class="col-md-6">
-            <input type="text" class="form-control form-control-sm" name="unidad" [(ngModel)]="form.unidad" placeholder="Unidad" />
-          </div>
-          <div class="col-md-6">
-            <input type="text" class="form-control form-control-sm" name="rut" [(ngModel)]="form.rut" placeholder="RUT" />
+            <div class="form-floating">
+              <input id="rut" type="text" class="form-control form-control-sm" name="rut" [(ngModel)]="form.rut" placeholder="RUT" />
+              <label for="rut">RUT</label>
+            </div>
           </div>
           <div class="col-12 text-end">
             <button type="submit" class="btn btn-primary btn-sm">{{ editId ? 'Actualizar' : 'Crear' }}</button>
