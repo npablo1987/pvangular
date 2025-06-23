@@ -20,7 +20,6 @@ export class UsuariosSistemaComponent implements OnInit {
 
   form: any = {
     numero_region: '',
-    inregion: '',
     region: '',
     nombre: '',
     correo: '',
@@ -56,14 +55,14 @@ export class UsuariosSistemaComponent implements OnInit {
 
   editar(u: any): void {
     this.editId = u.id_usersistema;
-    this.form = { ...u };
+    const { inregion, ...rest } = u;
+    this.form = { ...rest };
   }
 
   cancelar(): void {
     this.editId = null;
     this.form = {
       numero_region: '',
-      inregion: '',
       region: '',
       nombre: '',
       correo: '',

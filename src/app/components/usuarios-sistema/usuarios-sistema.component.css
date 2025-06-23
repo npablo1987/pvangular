@@ -11,3 +11,8 @@
   max-width: 800px;
   margin: 0 auto;
 }
+
+.form-floating > label {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
