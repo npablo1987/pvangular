@@ -245,24 +245,47 @@ export class ApiserviceIndapService {
 
   /* ──────────────── Usersistema CRUD ──────────────── */
 
-  listarUsuariosSistema(skip = 0, limit = 100) {
-    return this.http.get<any[]>(`${this.apiRoot}/usersistema/?skip=${skip}&limit=${limit}`);
+  listarUsuariosSistema(token: string, skip = 0, limit = 100) {
+    const headers = {
+      'Content-Type': 'application/json',
+      token
+    };
+    return this.http.get<any[]>(
+      `${this.apiRoot}/usersistema/?skip=${skip}&limit=${limit}`,
+      { headers }
+    );
   }
 
-  obtenerUsuarioSistema(id: number) {
-    return this.http.get<any>(`${this.apiRoot}/usersistema/${id}`);
+  obtenerUsuarioSistema(id: number, token: string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      token
+    };
+    return this.http.get<any>(`${this.apiRoot}/usersistema/${id}`, { headers });
   }
 
-  crearUsuarioSistema(data: any) {
-    return this.http.post<any>(`${this.apiRoot}/usersistema/`, data);
+  crearUsuarioSistema(data: any, token: string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      token
+    };
+    return this.http.post<any>(`${this.apiRoot}/usersistema/`, data, { headers });
   }
 
-  actualizarUsuarioSistema(id: number, cambios: any) {
-    return this.http.put<any>(`${this.apiRoot}/usersistema/${id}`, cambios);
+  actualizarUsuarioSistema(id: number, cambios: any, token: string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      token
+    };
+    return this.http.put<any>(`${this.apiRoot}/usersistema/${id}`, cambios, { headers });
   }
 
-  eliminarUsuarioSistema(id: number) {
-    return this.http.delete(`${this.apiRoot}/usersistema/${id}`);
+  eliminarUsuarioSistema(id: number, token: string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      token
+    };
+    return this.http.delete(`${this.apiRoot}/usersistema/${id}`, { headers });
   }
 
 }
