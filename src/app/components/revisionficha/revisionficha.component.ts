@@ -46,6 +46,8 @@ export class RevisionfichaComponent implements OnInit {
   mensaje    = '';
   mostrarAcciones = true;
   puedeDescargar = false;
+  esAdmin = false;
+  observacionFinal = '';
   idUsuario!: number;                     // ← ahora será el RUT sin DV
   registro1986Cargado = false;
 
@@ -93,6 +95,8 @@ export class RevisionfichaComponent implements OnInit {
     /*   id_usuario_modificacion  =  RUT sin dígito verificador   */
     const rutSinDv = (userData.rut || '').split('-')[0];  // "16650344-2" -> "16650344"
     this.idUsuario = Number(rutSinDv);
+
+    this.esAdmin = this.session.getUsuarioSistema() === true;
 
     /* 3️⃣  Documentos base */
     this.documentos = (fichaCompleta.documentos || []).map((d: any) => ({
@@ -330,6 +334,24 @@ export class RevisionfichaComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.msg.show('No se pudo generar el certificado PDF');
+      }
+    });
+  }
+
+  finalizarFicha() {
+    if (!this.idFicha) { return; }
+    this.api.cambiarEstadoFicha(
+      this.idFicha,
+      this.idUsuario,
+      this.observacionFinal || '',
+      'APROBACION FINAL' as any
+    ).subscribe({
+      next: (res) => {
+        this.msg.show(`Ficha finalizada: ${res.estado}`);
+      },
+      error: (err) => {
+        console.error(err);
+        this.msg.show('Error al finalizar la ficha');
       }
     });
   }
