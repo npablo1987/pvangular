@@ -192,5 +192,21 @@
     </button>
   </div>
 
+  <div *ngIf="esAdmin && puedeDescargar" class="mt-4">
+    <div class="alert alert-warning">
+      <strong>Aprobación final</strong> por parte de nivel central de INDAP.
+      Este es el término del proceso de revisión de la ficha.
+    </div>
+    <div class="mb-3">
+      <label for="obsFinal" class="form-label fw-bold">Observación final</label>
+      <textarea id="obsFinal" class="form-control" rows="3" [(ngModel)]="observacionFinal"></textarea>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary" (click)="finalizarFicha()">
+        Finalizar ficha
+      </button>
+    </div>
+  </div>
+
 
 </div>
