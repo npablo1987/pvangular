@@ -12,7 +12,7 @@ export const fichaAprobadaGuard: CanActivateFn = () => {
   const estado = fc?.ficha?.estado;
   const estadoActual = typeof estado === 'string' && estado.trim().toUpperCase();
   const hist = Array.isArray(fc?.historial) ? fc.historial : [];
-  const aprobadaHist = hist.some(h => (h?.estado || '').trim().toUpperCase() === 'APROBADA');
+  const aprobadaHist = hist.some((h: any) => (h?.estado || '').trim().toUpperCase() === 'APROBADA');
   const aprobada = estadoActual === 'APROBADA' || aprobadaHist;
 
   if (aprobada) {
