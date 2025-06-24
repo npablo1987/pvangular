@@ -18,9 +18,15 @@ export class MenuadminComponent implements OnInit {
 
   ngOnInit(): void {
     const evaluar = (fc: any) => {
-      const estado = fc?.ficha?.estado || '';
-      this.fichaAprobada = estado.trim().toUpperCase() === 'APROBADA';
+      const estadoActual = (fc?.ficha?.estado || '').trim().toUpperCase();
+      const hist = Array.isArray(fc?.historial) ? fc.historial : [];
+      const aprobadaEnHist = hist.some((h: any) =>
+        (h?.estado || '').trim().toUpperCase() === 'APROBADA'
+      );
+
+      this.fichaAprobada = estadoActual === 'APROBADA' || aprobadaEnHist;
     };
+
     evaluar(this.fichaSrv.fichaCompletaValue);
     this.fichaSrv.getFichaCompleta$().subscribe(evaluar);
   }
