@@ -153,6 +153,12 @@ export class ApiserviceIndapService {
     return this.http.get<{ id_ficha: number; aprobado: boolean }>(url);
   }
 
+  /** Total de fichas aprobadas por Jurídica y Finanzas */
+  totalAprobadasJuridicaFinanzas() {
+    const url = `${this.obsRoot}/aprobadosjuridicayfiannzas/total`;
+    return this.http.get<{ total: number }>(url);
+  }
+
   crearObservacionDoc(payload: {
     id_ficha: number;
     id_documento: number;
