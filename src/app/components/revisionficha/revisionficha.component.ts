@@ -344,14 +344,36 @@ export class RevisionfichaComponent implements OnInit {
       this.idFicha,
       this.idUsuario,
       this.observacionFinal || '',
-      'APROBACION FINAL' as any
+      'APROBADA' as any
     ).subscribe({
       next: (res) => {
-        this.msg.show(`Ficha finalizada: ${res.estado}`);
+        this.msg.show(`Ficha aprobada: ${res.estado}`);
       },
       error: (err) => {
         console.error(err);
-        this.msg.show('Error al finalizar la ficha');
+        this.msg.show('Error al aprobar la ficha');
+      }
+    });
+  }
+
+  rechazarFichaFinal() {
+    if (!this.idFicha) { return; }
+    if (!this.observacionFinal.trim()) {
+      this.msg.show('Por favor ingresa una observación para el rechazo.');
+      return;
+    }
+    this.api.cambiarEstadoFicha(
+      this.idFicha,
+      this.idUsuario,
+      this.observacionFinal,
+      'RECHAZADA - Pasara por nueva revisión' as any
+    ).subscribe({
+      next: (res) => {
+        this.msg.show(`Ficha rechazada: ${res.estado}`);
+      },
+      error: (err) => {
+        console.error(err);
+        this.msg.show('Error al rechazar la ficha');
       }
     });
   }
