@@ -9,43 +9,43 @@
         <div class="row g-3">
           <div class="col-md-6">
             <div class="form-floating">
-              <input id="numeroRegion" type="text" class="form-control form-control-sm" name="numero_region" [(ngModel)]="form.numero_region" placeholder="N° Región" />
+              <input id="numeroRegion" type="number" class="form-control form-control-sm" name="numero_region" [(ngModel)]="form.numero_region" placeholder="N° Región" required />
               <label for="numeroRegion">N° Región</label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-floating">
-              <input id="region" type="text" class="form-control form-control-sm" name="region" [(ngModel)]="form.region" placeholder="Región" />
+              <input id="region" type="text" class="form-control form-control-sm" name="region" [(ngModel)]="form.region" placeholder="Región" required />
               <label for="region">Región</label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-floating">
-              <input id="nombre" type="text" class="form-control form-control-sm" name="nombre" [(ngModel)]="form.nombre" placeholder="Nombre" />
+              <input id="nombre" type="text" class="form-control form-control-sm" name="nombre" [(ngModel)]="form.nombre" placeholder="Nombre" required />
               <label for="nombre">Nombre</label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-floating">
-              <input id="correo" type="email" class="form-control form-control-sm" name="correo" [(ngModel)]="form.correo" placeholder="Correo" />
+              <input id="correo" type="email" class="form-control form-control-sm" name="correo" [(ngModel)]="form.correo" placeholder="Correo" required />
               <label for="correo">Correo</label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-floating">
-              <input id="cargo" type="text" class="form-control form-control-sm" name="cargo" [(ngModel)]="form.cargo" placeholder="Cargo" />
+              <input id="cargo" type="text" class="form-control form-control-sm" name="cargo" [(ngModel)]="form.cargo" placeholder="Cargo" required />
               <label for="cargo">Cargo</label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-floating">
-              <input id="unidad" type="text" class="form-control form-control-sm" name="unidad" [(ngModel)]="form.unidad" placeholder="Unidad" />
+              <input id="unidad" type="text" class="form-control form-control-sm" name="unidad" [(ngModel)]="form.unidad" placeholder="Unidad" required />
               <label for="unidad">Unidad</label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-floating">
-              <input id="rut" type="text" class="form-control form-control-sm" name="rut" [(ngModel)]="form.rut" placeholder="RUT" />
+              <input id="rut" type="text" class="form-control form-control-sm" name="rut" [(ngModel)]="form.rut" placeholder="RUT" required pattern="^\d{7,8}-[\dkK]$" />
               <label for="rut">RUT</label>
             </div>
           </div>
