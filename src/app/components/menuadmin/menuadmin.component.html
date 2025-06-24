@@ -4,7 +4,7 @@
     <a [routerLink]="'/ubicacion-contacto'" class="nav-link" routerLinkActive="active">Ubicación/Contacto</a>
     <a [routerLink]="'/directorio'" class="nav-link" routerLinkActive="active">Directorio</a>
     <a [routerLink]="'/revisionficha'" class="nav-link" routerLinkActive="active">Revisión</a>
-    <a [routerLink]="'/certificado'" class="nav-link" routerLinkActive="active">Certificado</a>
+    <a *ngIf="fichaAprobada" [routerLink]="'/certificado'" class="nav-link" routerLinkActive="active">Certificado</a>
   </nav>
   <div class="underline"
        [style.left]="activeTab === 'Datos Empresa' ? '0%' :
