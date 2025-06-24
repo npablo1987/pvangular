@@ -44,6 +44,7 @@ export const routes: Routes = [
         },
         {
           path: 'certificado',
+          canActivate: [() => import('./guards/ficha-aprobada.guard').then(m => m.fichaAprobadaGuard)],
           loadComponent: () =>
             import('./components/certificado/certificado.component').then(m => m.CertificadoComponent),
         },
