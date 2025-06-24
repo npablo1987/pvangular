@@ -62,6 +62,73 @@ export class RevisionfichaComponent implements OnInit {
     console.log('[Revisionficha] constructor → session =', this.session);
   }
 
+  /**
+   * Carga datos de la ficha completa en las variables locales.
+   * Se reutiliza tanto al iniciar el componente como al refrescar.
+   */
+  private loadFichaFromData(fichaCompleta: any) {
+    this.historial = fichaCompleta.historial ?? [];
+    this.idFicha   = fichaCompleta.ficha?.id_ficha;
+
+    this.documentos = (fichaCompleta.documentos || []).map((d: any) => ({
+      id_documento: d.id_documento,
+      nombre      : d.nombre,
+      categoria   : d.categoria,
+      ruta_ftp    : d.ruta_ftp
+    }));
+
+    this.registro1986Cargado = this.documentos.some(
+      (d) => d.categoria === 'registro1986'
+    );
+
+    this.api.getObservacionesFicha(this.idFicha).subscribe((obs) => {
+      for (const doc of this.documentos) {
+        const encontrado = obs.find((o: any) => o.id_documento === doc.id_documento);
+        if (encontrado) {
+          Object.assign(doc, {
+            id_observacion_doc: encontrado.id_observacion_doc,
+            observacion       : encontrado.observacion,
+            fecha_vigencia    : encontrado.fecha_vigencia,
+          });
+        }
+      }
+    });
+
+    const perfilObj   = this.session.getPerfilActual();   // { codigo, perfil }
+    const perfilTxt   = perfilObj?.perfil || '';
+    const estadoBuscado = `aprobado - ${perfilTxt}`;
+    const buscadoNorm = this.normalizar(estadoBuscado);
+
+    const estadoFicha   = this.normalizar(fichaCompleta.ficha?.estado);
+    const halladoEnHist = this.historial.some(h =>
+      this.normalizar(h.estado).includes(buscadoNorm)
+    );
+
+    this.mostrarAcciones = !(estadoFicha.includes(buscadoNorm) || halladoEnHist);
+
+    this.api
+      .fichaAprobadaJuridicaFinanzas(this.idFicha)
+      .subscribe({
+        next : ({ aprobado }) => { this.puedeDescargar = aprobado; },
+        error: err => {
+          console.error('[Revisionficha] Error verificando aprobación', err);
+          this.puedeDescargar = false;
+        }
+      });
+  }
+
+  /** Obtiene la ficha desde el backend y refresca el estado local */
+  private refreshFicha() {
+    if (!this.idFicha) { return; }
+    this.api.dataFichaCompleta(this.idFicha).subscribe({
+      next : (fc) => {
+        this.fichaSrv.setFichaCompleta(fc);
+        this.loadFichaFromData(fc);
+      },
+      error: err => console.error('[Revisionficha] Error refrescando ficha', err)
+    });
+  }
+
 
 
   ngOnInit(): void {
@@ -79,8 +146,7 @@ export class RevisionfichaComponent implements OnInit {
     const fichaCompleta = this.fichaSrv.fichaCompletaValue;
     if (!fichaCompleta) { return; }
 
-    this.historial = fichaCompleta.historial ?? [];
-    this.idFicha   = fichaCompleta.ficha?.id_ficha;
+    this.loadFichaFromData(fichaCompleta);
 
     /* 2️⃣  User info desde el JWT */
     const userData = this.session.getTokenPayload()?.data;
@@ -97,60 +163,6 @@ export class RevisionfichaComponent implements OnInit {
     this.idUsuario = Number(rutSinDv);
 
     this.esAdmin = this.session.getUsuarioSistema() === true;
-
-    /* 3️⃣  Documentos base */
-    this.documentos = (fichaCompleta.documentos || []).map((d: any) => ({
-      id_documento: d.id_documento,
-      nombre      : d.nombre,
-      categoria   : d.categoria,
-      ruta_ftp    : d.ruta_ftp
-    }));
-
-    this.registro1986Cargado = this.documentos.some(
-      (d) => d.categoria === 'registro1986'
-    );
-
-    /* 4️⃣  Observaciones guardadas */
-    this.api.getObservacionesFicha(this.idFicha).subscribe((obs) => {
-      for (const doc of this.documentos) {
-        const encontrado = obs.find((o: any) => o.id_documento === doc.id_documento);
-        if (encontrado) {
-          Object.assign(doc, {
-            id_observacion_doc: encontrado.id_observacion_doc,
-            observacion       : encontrado.observacion,
-            fecha_vigencia    : encontrado.fecha_vigencia,
-          });
-        }
-      }
-    });
-
-    const perfilObj = this.session.getPerfilActual();   // { codigo, perfil }
-    const perfilTxt = perfilObj?.perfil || '';
-
-    const estadoBuscado = `aprobado - ${perfilTxt}`;    // ya en minúsculas luego
-    const buscadoNorm   = this.normalizar(estadoBuscado);
-
-    const estadoFicha   = this.normalizar(fichaCompleta.ficha?.estado);
-    const halladoEnHist = this.historial.some(h =>
-      this.normalizar(h.estado).includes(buscadoNorm)
-    );
-
-    console.log('[Revisionficha] estadoFicha:', estadoFicha);
-    console.log('[Revisionficha] buscamos   :', buscadoNorm);
-    console.log('[Revisionficha] en historial:', halladoEnHist);
-
-
-    this.mostrarAcciones = !(estadoFicha.includes(buscadoNorm) || halladoEnHist);
-
-    this.api
-      .fichaAprobadaJuridicaFinanzas(this.idFicha)
-      .subscribe({
-        next : ({ aprobado }) => { this.puedeDescargar = aprobado; },
-        error: err => {
-          console.error('[Revisionficha] Error verificando aprobación', err);
-          this.puedeDescargar = false;
-        }
-      });
 
 
 
@@ -237,7 +249,7 @@ export class RevisionfichaComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.msg.show(`Ficha rechazada: ${res.estado}`);
-          // aquí podrías refrescar el listado, cerrar diálogo, etc.
+          this.refreshFicha();
         },
         error: (err) => {
           console.error(err);
@@ -265,7 +277,7 @@ export class RevisionfichaComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.msg.show(`Ficha aprobada: ${res.estado}`);
-          // acciones posteriores...
+          this.refreshFicha();
         },
         error: (err) => {
           console.error(err);
@@ -348,6 +360,7 @@ export class RevisionfichaComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         this.msg.show(`Ficha aprobada: ${res.estado}`);
+        this.refreshFicha();
       },
       error: (err) => {
         console.error(err);
@@ -370,6 +383,7 @@ export class RevisionfichaComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         this.msg.show(`Ficha rechazada: ${res.estado}`);
+        this.refreshFicha();
       },
       error: (err) => {
         console.error(err);
