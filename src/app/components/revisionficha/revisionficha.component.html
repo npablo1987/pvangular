@@ -201,9 +201,12 @@
       <label for="obsFinal" class="form-label fw-bold">Observación final</label>
       <textarea id="obsFinal" class="form-control" rows="3" [(ngModel)]="observacionFinal"></textarea>
     </div>
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end gap-2">
       <button class="btn btn-primary" (click)="finalizarFicha()">
-        Finalizar ficha
+        Aprobar ficha
+      </button>
+      <button class="btn btn-secondary" (click)="rechazarFichaFinal()">
+        Rechazar ficha
       </button>
     </div>
   </div>
