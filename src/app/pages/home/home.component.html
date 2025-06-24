@@ -11,6 +11,18 @@
     </div>
   </div>
 </div>
+<div *ngIf="esAdmin && aprobadas > 0 && showFinalAlert" class="alert-container">
+  <div class="container">
+    <div class="alert alert-warning text-center m-0 position-relative" role="alert">
+      Hay <span class="text-danger">{{ aprobadas }}</span> fichas aprobadas que requieren revisión final,
+      <a routerLink="/fichasasignadas" class="alert-link">presione aquí</a>
+      para revisarlas.
+      <button type="button" class="close-btn" aria-label="Cerrar" (click)="dismissFinalAlert()">
+        &times;
+      </button>
+    </div>
+  </div>
+</div>
 <router-outlet></router-outlet>
 <!-- <app-fichasasignadas></app-fichasasignadas> -->
 <app-pieadmin></app-pieadmin>
