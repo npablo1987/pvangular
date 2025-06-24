@@ -8,8 +8,12 @@ export const fichaAprobadaGuard: CanActivateFn = () => {
   const router = inject(Router);
   const msg = inject(MensajeOverlayService);
 
-  const estado = fichaSrv.fichaCompletaValue?.ficha?.estado;
-  const aprobada = typeof estado === 'string' && estado.trim().toUpperCase() === 'APROBADA';
+  const fc = fichaSrv.fichaCompletaValue;
+  const estado = fc?.ficha?.estado;
+  const estadoActual = typeof estado === 'string' && estado.trim().toUpperCase();
+  const hist = Array.isArray(fc?.historial) ? fc.historial : [];
+  const aprobadaHist = hist.some(h => (h?.estado || '').trim().toUpperCase() === 'APROBADA');
+  const aprobada = estadoActual === 'APROBADA' || aprobadaHist;
 
   if (aprobada) {
     return true;
