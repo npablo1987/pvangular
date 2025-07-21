@@ -126,7 +126,12 @@
   </table>
   <hr>
 
-
+  <div *ngIf="showPendienteAlert" class="alert-container mb-3">
+    <div class="alert alert-danger text-center m-0 position-relative" role="alert">
+      {{ pendienteMsg }}
+      <button type="button" class="close-btn" aria-label="Cerrar" (click)="dismissPendienteAlert()">&times;</button>
+    </div>
+  </div>
 
   <h3 class="mt-4">Historial de la ficha</h3>
 
