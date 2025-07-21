@@ -51,6 +51,9 @@ export class RevisionfichaComponent implements OnInit {
   idUsuario!: number;                     // ← ahora será el RUT sin DV
   registro1986Cargado = false;
 
+  showPendienteAlert = false;
+  pendienteMsg = '';
+
   private idFicha!: number;
 
   constructor(
@@ -109,7 +112,20 @@ export class RevisionfichaComponent implements OnInit {
     this.api
       .fichaAprobadaJuridicaFinanzas(this.idFicha)
       .subscribe({
-        next : ({ aprobado }) => { this.puedeDescargar = aprobado; },
+        next : ({ aprobado }) => {
+          this.puedeDescargar = aprobado;
+          if (!aprobado) {
+            const perfil = (this.session.getPerfilActual()?.perfil || '').toLowerCase();
+            if (perfil.includes('finanzas')) {
+              this.pendienteMsg = 'Falta aprobación por Fiscalía';
+            } else {
+              this.pendienteMsg = 'Falta aprobación por Administración y Finanzas';
+            }
+            this.showPendienteAlert = true;
+          } else {
+            this.showPendienteAlert = false;
+          }
+        },
         error: err => {
           console.error('[Revisionficha] Error verificando aprobación', err);
           this.puedeDescargar = false;
@@ -390,6 +406,10 @@ export class RevisionfichaComponent implements OnInit {
         this.msg.show('Error al rechazar la ficha');
       }
     });
+  }
+
+  dismissPendienteAlert() {
+    this.showPendienteAlert = false;
   }
 
 }
